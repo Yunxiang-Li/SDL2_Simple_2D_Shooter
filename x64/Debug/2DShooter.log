@@ -1,7 +1,0 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (2DShooter.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  draw.c
-  init.c
-  input.c
-  main.c
-  Generating Code...
-  2DShooter.vcxproj -> C:\Users\kitzu\Desktop\SDL2_simple_2D_shooter\x64\Debug\SDL2_simple_2D_shooter.exe

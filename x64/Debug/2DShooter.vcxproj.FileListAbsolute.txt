@@ -1,4 +1,0 @@
-C:\Users\kitzu\Desktop\2DShooter\x64\Debug\SDL2_simple_2D_shooter.exe
-C:\Users\kitzu\Desktop\2DShooter\x64\Debug\SDL2_simple_2D_shooter.pdb
-C:\Users\kitzu\Desktop\SDL2_simple_2D_shooter\x64\Debug\SDL2_simple_2D_shooter.exe
-C:\Users\kitzu\Desktop\SDL2_simple_2D_shooter\x64\Debug\SDL2_simple_2D_shooter.pdb

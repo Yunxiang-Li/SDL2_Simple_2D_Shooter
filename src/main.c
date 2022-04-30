@@ -2,11 +2,17 @@
 
 int main(int argc, char* argv[])
 {
-	// Set appStruct's 2 pointers to be nullptr.
-	memset(&appStruct, 0, sizeof(AppStruct));
+	// Reset app and player.
+	memset(&app, 0, sizeof(AppStruct));
+	memset(&player, 0, sizeof(PlayerStruct));
 
 	// Initialize the SDL with a windows and a renderer.
 	initSDL();
+
+	// Set player's position and texture.
+	player.x = 100;
+	player.y = 100;
+	player.texture = loadTexture("Resources/images/player.png");
 
 	// Registers cleanup function to be called on normal program termination.
 	atexit(cleanup);
@@ -16,6 +22,8 @@ int main(int argc, char* argv[])
 		prepareScene();
 
 		doInput();
+
+		blit(player.texture, player.x, player.y);
 
 		presentScene();
 

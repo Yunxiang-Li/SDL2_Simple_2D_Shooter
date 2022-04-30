@@ -13,6 +13,8 @@
 
 #define PLAYER_WIDTH 48
 #define PLAYER_HEIGHT 46
+#define BULLET_WIDTH 5
+#define BULLET_HEIGHT 5
 
 // Declare all current functions(which are all defined somewhere else).
 extern void cleanup(void);
@@ -23,8 +25,9 @@ extern void presentScene(void);
 extern SDL_Texture* loadTexture(char*);
 extern void blit(SDL_Texture*, int, int);
 
-// Define app and player here.
+// Define app, bullet and player here.
 AppStruct app;
-PlayerStruct player;
+EntityStruct player;
+EntityStruct bullet;
 
 #endif // MAIN_H

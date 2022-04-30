@@ -45,9 +45,9 @@ void doKeyDown(SDL_KeyboardEvent* eventPtr)
     // First check if this is not a repeat.
     if (eventPtr->repeat == 0)
     {   
-        // Check up, down, left, right arrow key cases.
         switch (eventPtr->keysym.scancode)
         {
+            // Check up, down, left, right arrow key cases.
             case SDL_SCANCODE_UP:
                 app.up = 1;
                 break;
@@ -59,6 +59,11 @@ void doKeyDown(SDL_KeyboardEvent* eventPtr)
                 break;
             case SDL_SCANCODE_RIGHT:
                 app.right = 1;
+                break;
+
+            // Check if player is currently firing a bullet or not(Press X key).
+            case SDL_SCANCODE_X:
+                app.fire = 1;
                 break;
             default:
                 break;
@@ -89,6 +94,11 @@ void doKeyUp(SDL_KeyboardEvent* eventPtr)
             break;
         case SDL_SCANCODE_RIGHT:
             app.right = 0;
+            break;
+
+        // Check if player is stop firing a bullet or not(Release X key).
+        case SDL_SCANCODE_X:
+            app.fire = 0;
             break;
         default:
             break;

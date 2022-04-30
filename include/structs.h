@@ -10,13 +10,19 @@ typedef struct {
 	int down;
 	int left;
 	int right;
+	int fire;
 } AppStruct;
 
-// Struct that holds player's current position and texture pointer.
+/* Struct that holds each entity's current position, current delta movement,
+health points and texture pointer(simulation of inheritance).
+*/
 typedef struct {
 	int x;
 	int y;
+	int dx;
+	int dy;
+	int health;
 	SDL_Texture* texture;
-} PlayerStruct;
+} EntityStruct;
 
 #endif // STRUCTS_H

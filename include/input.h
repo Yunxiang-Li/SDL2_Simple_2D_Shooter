@@ -13,4 +13,6 @@
 #include "defs.h"
 #include "structs.h"
 
+extern AppStruct app;
+
 #endif // INPUT_H

@@ -19,22 +19,45 @@ int main(int argc, char* argv[])
 
 	while (1)
 	{
+		// Prepare the background part of the game scene inside backbuffer.
 		prepareScene();
 
+		// Process input.
 		doInput();
 
+		// Update player's current position.
 		if (app.up)
-			player.y -= 4;
+		{
+			player.y -= 5;
+			if (player.y < 0)
+				player.y = 0;
+		}
+	
 		if (app.down)
-			player.y += 4;
+		{
+			player.y += 5;
+			if (player.y > SCREEN_HEIGHT - PLAYER_HEIGHT)
+				player.y = SCREEN_HEIGHT - PLAYER_HEIGHT;
+		}
+			
 		if (app.left)
-			player.x -= 4;
+		{
+			player.x -= 5;
+			if (player.x < 0)
+				player.x = 0;
+		}
+			
 		if (app.right)
-			player.x += 4;
+		{
+			player.x += 5;
+			if (player.x > SCREEN_WIDTH - PLAYER_WIDTH)
+				player.x = SCREEN_WIDTH - PLAYER_WIDTH;
+		}
 
-
+		// Render player inside backbuffer.
 		blit(player.texture, player.x, player.y);
 
+		// Display the whole game scene(from backbuffer).
 		presentScene();
 
 		// Wait for 16 miliseconds(FPS will be 62).

@@ -9,6 +9,10 @@
 #include "ctype.h"
 #include <SDL.h>
 #include "structs.h"
+#include "defs.h"
+
+#define PLAYER_WIDTH 48
+#define PLAYER_HEIGHT 46
 
 // Declare all current functions(which are all defined somewhere else).
 extern void cleanup(void);

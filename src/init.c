@@ -1,7 +1,7 @@
 #include "init.h"
 
 /**
- * @brief Initialize the SDL with a windows and a renderer(for now).
+ * @brief Initialize the game.
  *
  */
 void initSDL()
@@ -53,7 +53,7 @@ void initSDL()
 }
 
 /**
- * @brief Clean up the appStruct and quit.
+ * @brief Clean up the game and quit.
  *
  */
 void cleanup(void)

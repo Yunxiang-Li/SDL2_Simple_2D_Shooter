@@ -1,3 +1,4 @@
+// This class process all game input.
 #pragma once
 #ifndef INPUT_H
 #define INPUT_H
@@ -10,8 +11,8 @@
 
 #include <SDL.h>
 
-#include "defs.h"
-#include "structs.h"
+#include <defs.h>
+#include <structs.h>
 
 extern AppStruct app;
 

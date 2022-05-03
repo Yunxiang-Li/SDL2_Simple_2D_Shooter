@@ -1,3 +1,4 @@
+// This class handles the initialization and cleanup of the game.
 #pragma once
 #ifndef INIT_H
 #define INIT_H

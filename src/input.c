@@ -13,7 +13,7 @@ void doInput()
     SDL_Event event;
 
     // Check if pending events exist.
-    while (SDL_PollEvent(&event))
+    while (SDL_PollEvent(&event) != 0)
     {
         switch (event.type)
         {

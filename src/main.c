@@ -3,8 +3,10 @@
 // Forward declaration.
 static void capFrameRate(long*);
 
+// Main game loop.
 int main(int argc, char* argv[])
 {
+	// Declare each frame's start time.
 	long frameStartTime;
 
 	// Reset app.
@@ -19,6 +21,7 @@ int main(int argc, char* argv[])
 	// Registers cleanup function to be called on normal program termination.
 	atexit(cleanup);
 
+	// Start the main game loop.
 	while (1)
 	{
 		// Initialize the first frame start time.

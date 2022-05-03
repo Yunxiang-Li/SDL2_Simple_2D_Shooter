@@ -44,11 +44,11 @@ void initSDL()
 
 	// load support for the JPG and PNG image formats
 	int flags = IMG_INIT_JPG | IMG_INIT_PNG;
-	int initted = IMG_Init(flags);
-	if ((initted & flags) != flags) {
+	int initRes = IMG_Init(flags);
+	if ((initRes & flags) != flags) {
+		// handle error
 		printf("IMG_Init: Failed to init required jpg and png support!\n");
 		printf("IMG_Init: %s\n", IMG_GetError());
-		// handle error
 	}
 }
 

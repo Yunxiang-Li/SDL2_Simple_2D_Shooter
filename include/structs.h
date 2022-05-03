@@ -40,7 +40,7 @@ typedef struct EntityStruct_t {
 	// Current health points
 	int health;
 	// Track the player's ability to fire.
-	int reload;
+	int bulletCooldown;
 	// Texture pointer
 	SDL_Texture* texture;
 	// Connected as a linked list node.

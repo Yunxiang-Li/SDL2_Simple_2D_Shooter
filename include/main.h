@@ -1,4 +1,4 @@
-// This class represents the main game loop and the entrance.
+// This class responsible for the entrance and the main game loop.
 #pragma once
 #ifndef MAIN_H
 #define MAIN_H
@@ -20,7 +20,7 @@ extern void initStage(void);
 extern void prepareScene(void);
 extern void presentScene(void);
 
-// Define app, stage here.
+// Declare app, stage here.
 AppStruct app;
 StageStruct stage;
 

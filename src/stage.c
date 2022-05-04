@@ -12,16 +12,25 @@ static void doShooters(void);
 static void spawnEnemies(void);
 static void drawShooters(void);
 static int isBulletHitShooter(EntityStruct*);
+static void resetStage(void);
+static void doEnemiesAI(void);
+static void clipPlayer(void);
+static void fireEnemyBullet(EntityStruct*);
 
 // Declare player by pointer.
 static EntityStruct* player;
 
-// Declare bullet texture
-static SDL_Texture* bulletTexture;
+// Declare player texture and player bullet texture.
+static SDL_Texture* playerTexture;
+static SDL_Texture* playerBulletTexture;
 
-// Declare enemy texture and spawn timer.
+// Declare enemy texture, enemy bullet texture and spawn timer.
 static SDL_Texture* enemyTexture;
+static SDL_Texture* enemyBulletTexture;
 static int enemySpawnTimer;
+
+// Declare the stage reset timer(decrement after player is dead).
+static int stageResetTimer;
 
 /**
  * @brief Set up all prepare work.
@@ -38,15 +47,16 @@ void initStage()
 	stage.shooterTailPtr = &stage.shooterHead;
 	stage.bulletTailPtr = &stage.bulletHead;
 
-	// Initialize the player.
-	initPlayer();
+	// Set player and player bullet's texture.
+	playerTexture = loadTexture("Resources/images/player.png");
+	playerBulletTexture = loadTexture("Resources/images/playerBullet.png");
 
-	// Set bullet's texture.
-	bulletTexture = loadTexture("Resources/images/playerBullet.png");
-
-	// Set enemy's texture and spawn timer.
+	// Set enemy's texture, enemy bullet's texture.
 	enemyTexture = loadTexture("Resources/images/enemy.png");
-	enemySpawnTimer = 0;
+	enemyBulletTexture = loadTexture("Resources/images/enemyBullet.png");
+
+	// Reset the whole game stage.
+	resetStage();
 }
 
 /**
@@ -63,82 +73,86 @@ static void initPlayer()
 	stage.shooterTailPtr->next = player;
 	stage.shooterTailPtr = player;
 
-	// Set player's original position, texture, width, height and side.
+	// Set player's health, original position, texture, width, height and side.
+	player->health = 1;
 	player->x = PLAYER_ORIGIN_X;
 	player->y = PLAYER_ORIGIN_Y;
-	player->texture = loadTexture("Resources/images/player.png");
+	player->texture = playerTexture;
 	SDL_QueryTexture(player->texture, NULL, NULL, &player->width, &player->height);
 	player->side = PLAYER_SIDE;
 }
 
 /**
- * @brief A bound callback to set up player's delta movement, update all planes' positions(including player),
- update player bullets' positions and then spawn all enemies.
+ * @brief A bound callback to handle all in game updates.
 */
 static void logic()
 {
+	// Update player.
 	doPlayer();
 
+	// Update enemies' simple AI.
+	doEnemiesAI();
+
+	// Update all shooters' positions.
 	doShooters();
 
+	// Update all bullets.
 	doBullets();
 
+	// Spawn enemies.
 	spawnEnemies();
+
+	// Check player's border.
+	clipPlayer();
+
+	// If player is dead and stage timer is less than zero.
+	if (player == NULL && --stageResetTimer <= 0)
+	{
+		resetStage();
+	}
 }
 
 /**
- * @brief Update the player's states.
+ * @brief Update the player's states if player is still alive.
 */
 static void doPlayer()
 {
-	// Set player's delta movement to zero.
-	player->dx = 0;
-	player->dy = 0;
+	if (player != NULL)
+	{
+		// Set player's delta movement to zero.
+		player->dx = 0;
+		player->dy = 0;
 
-	// Update player's delta movement.
-	if (app.keyboard[SDL_SCANCODE_UP])
-	{
-		player->dy = -PLAYER_SPEED;
-	}
-	if (app.keyboard[SDL_SCANCODE_DOWN])
-	{
-		player->dy = PLAYER_SPEED;
-	}
-	if (app.keyboard[SDL_SCANCODE_LEFT])
-	{
-		player->dx = -PLAYER_SPEED;
-	}
-	if (app.keyboard[SDL_SCANCODE_RIGHT])
-	{
-		player->dx = PLAYER_SPEED;
-	}
+		// Update player's delta movement.
+		if (app.keyboard[SDL_SCANCODE_UP])
+		{
+			player->dy = -PLAYER_SPEED;
+		}
+		if (app.keyboard[SDL_SCANCODE_DOWN])
+		{
+			player->dy = PLAYER_SPEED;
+		}
+		if (app.keyboard[SDL_SCANCODE_LEFT])
+		{
+			player->dx = -PLAYER_SPEED;
+		}
+		if (app.keyboard[SDL_SCANCODE_RIGHT])
+		{
+			player->dx = PLAYER_SPEED;
+		}
 
-	// Reload attribute controls how fast player can fire bullets.
-	if (player->bulletCooldown > 0)
-	{
-		(player->bulletCooldown--);
+		// Reload attribute controls how fast player can fire bullets.
+		if (player->bulletCooldown > 0)
+		{
+			(player->bulletCooldown--);
+		}
+
+		// Check if player press fire key(X key) and reload(actually cooldown) is reduced to zero, then fire a bullet.
+		if (app.keyboard[SDL_SCANCODE_X] && player->bulletCooldown == 0)
+		{
+			fireBullet();
+		}
 	}
-
-	// Check if player press fire key(X key) and reload(actually cooldown) is reduced to zero, then fire a bullet.
-	if (app.keyboard[SDL_SCANCODE_X] && player->bulletCooldown == 0)
-	{
-		fireBullet();
-	}
-
-	//// Here.
-	//// Update player's current position.
-	//player->x += player->dx;
-	//player->y += player->dy;
-
-	//// Border check
-	//if (player->y > SCREEN_HEIGHT - PLAYER_HEIGHT)
-	//	player->y = SCREEN_HEIGHT - PLAYER_HEIGHT;
-	//if (player->y < 0)
-	//	player->y = 0;
-	//if (player->x < 0)
-	//	player->x = 0;
-	//if (player->x > SCREEN_WIDTH - PLAYER_WIDTH)
-	//	player->x = SCREEN_WIDTH - PLAYER_WIDTH;
 }
 
 /**
@@ -156,12 +170,12 @@ static void fireBullet()
 	stage.bulletTailPtr = bullet;
 
 	// Set up bullet's position, width, height, delta movement, health and texture.
-	bullet->x = player->x + PLAYER_WIDTH;
-	bullet->y = player->y + PLAYER_HEIGHT / 2 - PLAYER_BULLET_HEIGHT / 2;
+	bullet->texture = playerBulletTexture;
+	SDL_QueryTexture(bullet->texture, NULL, NULL, &(bullet->width), &(bullet->height));
+	bullet->x = player->x + player->width;
+	bullet->y = player->y + player->height / 2 - bullet->height / 2;
 	bullet->dx = PLAYER_BULLET_SPEED;
 	bullet->health = 1;
-	bullet->texture = bulletTexture;
-	SDL_QueryTexture(bullet->texture, NULL, NULL, &(bullet->width), &(bullet->height));
 
 	// Set the player reload(0.133333 seconds for next bullet in 60fps situation).
 	player->bulletCooldown = PLAYER_BULLET_COOLDOWN;
@@ -185,9 +199,11 @@ static void doBullets(void)
 		curr->x += curr->dx;
 		curr->y += curr->dy;
 
-		// If current bullet is out the screen then delete it.
-		if (curr->x > SCREEN_WIDTH || isBulletHitShooter(curr))
+		// If current bullet is out of the screen or collides with our side shooter, then set its health to zero and delete it.
+		if (curr->x > SCREEN_WIDTH || curr->y > SCREEN_HEIGHT || curr->x < -(curr->width) || curr->y < -(curr->height) ||
+			isBulletHitShooter(curr))
 		{
+			curr->health = 0;
 			 //Check for tail special condition.
 			if (curr == stage.bulletTailPtr)
 			{
@@ -240,27 +256,27 @@ static void doShooters()
 		curr->x += curr->dx;
 		curr->y += curr->dy;
 
-		// Player border check.
-		if (curr == player)
+		// If current enemy shooter is too left(off screen)
+		if (/*curr != player && (*/curr->x < -curr->width)
 		{
-			if (curr->y > SCREEN_HEIGHT - PLAYER_HEIGHT)
-				curr->y = SCREEN_HEIGHT - PLAYER_HEIGHT;
-			if (curr->y < 0)
-				curr->y = 0;
-			if (curr->x < 0)
-				curr->x = 0;
-			if (curr->x > SCREEN_WIDTH - PLAYER_WIDTH)
-				curr->x = SCREEN_WIDTH - PLAYER_WIDTH;
+			// Set current enemy shooter's health to zero.
+			curr->health == 0;
 		}
 
-		// Check if the enemy shooter is too left(fully offscreen) or is detroyed(health equals 0).
-		if (curr != player && (curr->x < -curr->width || curr->health == 0))
+		// Check if the current shooter's health is 0.
+		if (curr->health == 0)
 		{	
+			// If its player, then destroy the player.
+			if (curr == player)
+			{
+				player = NULL;
+			}
+			// Handle the tail special case.
 			if (curr == stage.shooterTailPtr)
 			{
 				stage.shooterTailPtr = prev;
 			}
-			// If so, delete it.
+			//  Delete current shooter.
 			prev->next = curr->next;
 			free(curr);
 			curr = prev;
@@ -288,23 +304,25 @@ static void spawnEnemies()
 		stage.shooterTailPtr->next = enemy;
 		stage.shooterTailPtr = enemy;
 
-		// Set each enemy's start position, texture and width and height.
-		enemy->x = SCREEN_WIDTH - ENEMY_WIDTH;
-		// Prevent the enemies from leaving the top and bottom of the screen.
-		enemy->y = rand() % (SCREEN_HEIGHT - ENEMY_HEIGHT);
+		// Set each enemy's texture, width and height.
 		enemy->texture = enemyTexture;
 		SDL_QueryTexture(enemy->texture, NULL, NULL, &enemy->width, &enemy->height);
+		// Set each enemy's start position.
+		enemy->x = SCREEN_WIDTH - enemy->width;
+		// Prevent the enemies from leaving the top and bottom of the screen.
+		enemy->y = rand() % (SCREEN_HEIGHT - enemy->height);
 
 		// Set each enemy's delta movement on X axis(between -2 and -5).
 		enemy->dx = -(2 + (rand() % 4));
-		//enemy->dy = 1 -(rand() % 3);
 
 		// Set next enemy's spawn time to a integer from 30 to 89.
-		enemySpawnTimer = 30 + (rand() % 60);
+		enemySpawnTimer = FPS/2 + (rand() % FPS);
 		// Set enemy's side.
 		enemy->side = ENEMY_SIDE;
 		// Set enemy's health.
 		enemy->health = 1;
+		// Set enemy's bullet cooldown(from 1 second to 2 seconds under 60 fps).
+		enemy->bulletCooldown = FPS * (1 + (rand() % 2));
 	}
 }
 
@@ -334,7 +352,7 @@ static int isBulletHitShooter(EntityStruct* bullet)
 		SDL_Rect currShooterRect = { currShooter->x, currShooter->y, currShooter->width, currShooter->height };
 
 		// Check if bullet and shooter have different sides and two SDL_Rect objects do overlap.
-		if (currShooter->side != bullet->side && collision(&bulletRect, currShooterRect))
+		if (currShooter->side != bullet->side && collision(&bulletRect, &currShooterRect))
 		{
 			// Set bullet and currShooter's health to zero(destroy bullet and currShooter).
 			bullet->health = 0;
@@ -343,4 +361,122 @@ static int isBulletHitShooter(EntityStruct* bullet)
 		}
 	}
 	return 0;
+}
+
+/**
+ * @brief Reset the whole game stage.
+*/
+static void resetStage()
+{
+	// Declare two pointer to help us free two linked lists.
+	EntityStruct* currShooterPtr;
+	EntityStruct* currBulletPtr;
+
+	// Delete all shooters in the shooter linked list.
+	while (stage.shooterHead.next)
+	{
+		currShooterPtr = stage.shooterHead.next;
+		stage.shooterHead.next = currShooterPtr->next;
+		free(currShooterPtr);
+	}
+
+	// Delete all bullets in the bullet linked list.
+	while (stage.bulletHead.next)
+	{
+		currBulletPtr = stage.bulletHead.next;
+		stage.bulletHead.next = currBulletPtr->next;
+		free(currBulletPtr);
+	}
+
+	// Reset the stage struct and two linked lists.
+	memset(&stage, 0, sizeof(StageStruct));
+	stage.shooterTailPtr = &stage.shooterHead;
+	stage.bulletTailPtr = &stage.bulletHead;
+
+	// Re-initialize the player.
+	initPlayer();
+
+	// Reset enemy spawn timer.
+	enemySpawnTimer = 0;
+	// Reset stage reset timer.
+	stageResetTimer = FPS * 2;
+}
+
+/**
+ * @brief Update enemies AI.
+*/
+static void doEnemiesAI()
+{
+	// Loop throught the shooter linked list.
+	for (EntityStruct* currEnemyPtr = stage.shooterHead.next; currEnemyPtr != NULL; currEnemyPtr = currEnemyPtr->next)
+	{
+		// Check if current shooter is not player, player is still alive and current enemy is able to fire next bullet.
+		if (currEnemyPtr != player && player != NULL && --currEnemyPtr->bulletCooldown <= 0)
+		{
+			// Fire the bullet
+			fireEnemyBullet(currEnemyPtr);
+		}
+	}
+}
+
+/**
+ * @brief Let input enemy fire a bullet towards player's position.
+ * @param enemyPtr A pointer of EntityStruct indicates the input enemy object.
+*/
+static void fireEnemyBullet(EntityStruct* enemyPtr)
+{
+	// Initialize a bullet object and insert it into the bullet linked list.
+	EntityStruct* bullet = malloc(sizeof(EntityStruct));
+	memset(bullet, 0, sizeof(EntityStruct));
+	stage.bulletTailPtr->next = bullet;
+	stage.bulletTailPtr = bullet;
+
+	// Set enemy bullet's position, health, texture, side, width and height.
+	bullet->texture = enemyBulletTexture;
+	SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->width, &bullet->height);
+	bullet->x = enemyPtr->x - (bullet->width / 2);
+	bullet->y = enemyPtr->y + (enemyPtr->height / 2) - (bullet->height / 2);
+	bullet->health = 1;
+	bullet->side = enemyPtr->side;
+
+
+	// Normalize enemy bullet's dx and dy towards player's direction.
+	calcSlope(player->x + (player->width / 2), player->y + (player->height / 2), bullet->x, bullet->y, &bullet->dx, &bullet->dy);
+
+	// Multiply normalized enemy bullet direction by enemy bullet speed.
+	bullet->dx *= ENEMY_BULLET_SPEED;
+	bullet->dy *= ENEMY_BULLET_SPEED;
+
+	// Set enemy's bullet's side and cooldown(2 seconds under 60 fps).
+	bullet->side = ENEMY_SIDE;
+	enemyPtr->bulletCooldown = (rand() % FPS * 2);
+}
+
+/**
+ * @brief Player's border check.
+*/
+static void clipPlayer()
+{
+	if (player != NULL)
+	{
+		if (player->x < 0)
+		{
+			player->x = 0;
+		}
+
+		if (player->y < 0)
+		{
+			player->y = 0;
+		}
+
+		if (player->x > SCREEN_WIDTH - player->width)
+		{
+			player->x = SCREEN_WIDTH - player->width;
+		}
+
+		if (player->y > SCREEN_HEIGHT - player->height)
+		{
+			player->y = SCREEN_HEIGHT - player->height;
+		}
+	}
 }

@@ -10,21 +10,21 @@
 
 // Define the game screen width and height here.
 
-#define SCREEN_WIDTH   1280
-#define SCREEN_HEIGHT  720
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
 
 // Define max possible keyboard key here.
 #define MAX_KEYBOARD_KEYS 104
 
 // Define player and its bullet's speed.
-#define PLAYER_SPEED          5
-#define PLAYER_BULLET_SPEED   20
+#define PLAYER_SPEED 5
+#define PLAYER_BULLET_SPEED 20
 
-// Define player and bullet's size.
-#define PLAYER_WIDTH 48
-#define PLAYER_HEIGHT 46
-#define PLAYER_BULLET_WIDTH 26
-#define PLAYER_BULLET_HEIGHT 9
+// Define player and player bullet's size.
+//#define PLAYER_WIDTH 48
+//#define PLAYER_HEIGHT 46
+//#define PLAYER_BULLET_WIDTH 26
+//#define PLAYER_BULLET_HEIGHT 9
 
 // Define player original position
 #define PLAYER_ORIGIN_X 100
@@ -36,16 +36,20 @@
 // Define the player's cooldown for next bullet.
 #define PLAYER_BULLET_COOLDOWN 8
 
-// Define the enemy shooter's width and height.
-#define ENEMY_WIDTH 48
-#define ENEMY_HEIGHT 46
+//// Define the enemy shooter's width and height.
+//#define ENEMY_WIDTH 48
+//#define ENEMY_HEIGHT 46
+//
+//// Define enemy bullet's width and height.
+//#define ENEMY_BULLET_WIDTH 11
+//#define ENEMY_BULLET_HEIGHT 11
 
 // Define bullet's side(player side or enemy side).
-#define PLAYER_SIDE            0
-#define ENEMY_SIDE             1
+#define PLAYER_SIDE 0
+#define ENEMY_SIDE  1
 
 // Define enemy's bullet speed.
-#define ENEMY_BULLET_SPEED     8
+#define ENEMY_BULLET_SPEED 8
 
 // Define the game FPS.
 #define FPS 60

@@ -41,18 +41,20 @@ typedef struct EntityStruct_t {
 	int health;
 	// Track the player's ability to fire.
 	int bulletCooldown;
+	// Track down this object's side(player side or enemy side).
+	int side;
 	// Texture pointer
 	SDL_Texture* texture;
 	// Connected as a linked list node.
 	EntityStruct* next;
 }EntityStruct;
 
-// Struct that hold information about fighters and bullets.
+// Struct that hold information about shooters and bullets.
 typedef struct {
-	EntityStruct fighterHead;
-	EntityStruct* fighterTail;
+	EntityStruct shooterHead;
+	EntityStruct* shooterTailPtr;
 	EntityStruct bulletHead;
-	EntityStruct* bulletTail;
+	EntityStruct* bulletTailPtr;
 } StageStruct;
 
 #endif // STRUCTS_H

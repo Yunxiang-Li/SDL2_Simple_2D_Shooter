@@ -4,6 +4,10 @@
 #ifndef DEFS_H
 #define DEFS_H
 
+// Define MIN and MAX functions.
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
 // Define the game screen width and height here.
 
 #define SCREEN_WIDTH   1280
@@ -19,8 +23,8 @@
 // Define player and bullet's size.
 #define PLAYER_WIDTH 48
 #define PLAYER_HEIGHT 46
-#define BULLET_WIDTH 5
-#define BULLET_HEIGHT 5
+#define PLAYER_BULLET_WIDTH 26
+#define PLAYER_BULLET_HEIGHT 9
 
 // Define player original position
 #define PLAYER_ORIGIN_X 100
@@ -31,6 +35,20 @@
 
 // Define the player's cooldown for next bullet.
 #define PLAYER_BULLET_COOLDOWN 8
+
+// Define the enemy shooter's width and height.
+#define ENEMY_WIDTH 48
+#define ENEMY_HEIGHT 46
+
+// Define bullet's side(player side or enemy side).
+#define PLAYER_SIDE            0
+#define ENEMY_SIDE             1
+
+// Define enemy's bullet speed.
+#define ENEMY_BULLET_SPEED     8
+
+// Define the game FPS.
+#define FPS 60
 
 #endif // DEFS_H
 

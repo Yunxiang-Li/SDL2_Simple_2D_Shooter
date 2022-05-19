@@ -54,5 +54,8 @@
 // Define the game FPS.
 #define FPS 60
 
+// Define the maximum stars' num inside the game background.
+#define MAX_STAR_NUM 500
+
 #endif // DEFS_H
 

@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 	// Start the main game loop.
 	while (1)
 	{
-		// Initialize the first frame start time.
+		// Initialize each frame start time.
 		frameStartTime = SDL_GetTicks();
 
 		// Clear the background part of the game scene inside backbuffer.
@@ -55,17 +55,14 @@ static void capFrameRate(long* frameStartTime)
 	// Store the current frame's time.
 	long actualFrameTime = SDL_GetTicks() - *frameStartTime;
 
-	// Subtract actual frame time from expected frame time.
-	expectedFrameTime -= actualFrameTime;
-
-	// Ignore all negative cases.
-	if (expectedFrameTime < 0)
+	// Check if each frame is processed faster then expected.
+	if (expectedFrameTime >= actualFrameTime)
 	{
-		expectedFrameTime = 0;
+		// Subtract actual frame time from expected frame time.
+		expectedFrameTime -= actualFrameTime;
+		// Wait for remaining time.
+		SDL_Delay(expectedFrameTime);
 	}
-
-	// Wait for remaining time.
-	SDL_Delay(expectedFrameTime);
 
 	// Set up next frame's start time.
 	*frameStartTime = SDL_GetTicks();

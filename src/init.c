@@ -6,6 +6,9 @@
  */
 void initSDL()
 {
+	// Hide mouse cursor.
+
+	SDL_ShowCursor(0);
 	// Set SDL render flags to use hardware acceleration and synchronize with the refresh rate.
 	int rendererFlags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
 

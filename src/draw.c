@@ -63,3 +63,23 @@ void blit(SDL_Texture* texturePtr, int x, int y)
 	// Render input texture into dest(SDL_Rect dest), NULL means render the full texture.
 	SDL_RenderCopy(app.renderer, texturePtr, NULL, &dest);
 }
+
+/**
+ * @brief Draws the SDL_Rect part of a specified texture on screen at the specified x and y coordinates.
+ * @param texturePtr Input texture's pointer
+ * @param srcPtr A pointer to a SDL_Rect object indicates the input texture's SDL_Rect object.
+ * @param x An int indicates specified x
+ * @param y An int indicates specified y
+*/
+void blitRect(SDL_Texture* texturePtr, SDL_Rect* srcPtr, int x, int y)
+{
+	// Set rect part's position and size.
+	SDL_Rect dest;
+	dest.h = srcPtr->h;
+	dest.w = srcPtr->w;
+	dest.x = x;
+	dest.y = y;
+
+	// Render input texture into dest with specified rect size.
+	SDL_RenderCopy(app.renderer, texturePtr, srcPtr, &dest);
+}

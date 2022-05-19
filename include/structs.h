@@ -8,26 +8,32 @@
 #include <defs.h>
 
 // Forward declaration.
-typedef struct EntityStruct_t EntityStruct;
+typedef struct EntityStruct EntityStruct;
+typedef struct ExplosionStruct ExplosionStruct;
+typedef struct DebrisStruct DebrisStruct;
+typedef struct DelegateStruct DelegateStruct;
+typedef struct AppStruct AppStruct;
+typedef struct StageStruct StageStruct;
+typedef struct StarStruct StarStruct;
 
 // Struct that acts like a delegate of processing logic and render parts of the game.
-typedef struct {
+struct DelegateStruct {
 	void (*logic)(void);
 	void (*draw)(void);
-} DelegateStruct;
+};
 
 // Struct that holds window pointer, render pointers and 4 integers indicate 4 directions.
-typedef struct {
+struct AppStruct {
 	SDL_Renderer* renderer;
 	SDL_Window* window;
 	// Delegate of logic and render parts.
 	DelegateStruct delegate;
 	// Hold all possible keys' states.
 	int keyboard[MAX_KEYBOARD_KEYS];
-} AppStruct;
+};
 
 // Struct that holds each entity's attributes.
-typedef struct EntityStruct_t {
+struct EntityStruct {
 	// Current position
 	float x;
 	float y;
@@ -47,14 +53,47 @@ typedef struct EntityStruct_t {
 	SDL_Texture* texture;
 	// Connected as a linked list node.
 	EntityStruct* next;
-}EntityStruct;
+};
+
+// Struct that hold details of an explosion.
+struct ExplosionStruct {
+	float x;
+	float y;
+	float dx;
+	float dy;
+	int red, green, blue, alpha;
+	ExplosionStruct* next;
+};
+
+// Struct that hold debris when a ship is destroyed.
+struct DebrisStruct {
+	float x;
+	float y;
+	float dx;
+	float dy;
+	SDL_Rect rect;
+	SDL_Texture* texture;
+	int life;
+	DebrisStruct* next;
+};
 
 // Struct that hold information about shooters and bullets.
-typedef struct {
+struct StageStruct {
 	EntityStruct shooterHead;
 	EntityStruct* shooterTailPtr;
 	EntityStruct bulletHead;
 	EntityStruct* bulletTailPtr;
-} StageStruct;
+	ExplosionStruct explosionHead;
+	ExplosionStruct* explosionTailPtr;
+	DebrisStruct debrisHead;
+	DebrisStruct* debrisTailPtr;
+};
+
+// Struct that hold details about stars inside the game background.
+struct StarStruct {
+	int x;
+	int y;
+	int speed;
+};
 
 #endif // STRUCTS_H

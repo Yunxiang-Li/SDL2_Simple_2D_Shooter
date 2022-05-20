@@ -17,7 +17,7 @@ static void doEnemiesAI(void);
 static void clipPlayer(void);
 static void fireEnemyBullet(EntityStruct*);
 static void initStarfield(void);
-static void checkBackground(void);
+static void updateBackground(void);
 static void updateStarfield(void);
 static void updateExplosions(void);
 static void updateDebris(void);
@@ -113,7 +113,7 @@ static void initPlayer()
 static void logic()
 {
 	// Border check of background's x position.
-	checkBackground();
+	updateBackground();
 
 	// Update all stars.
 	updateStarfield();
@@ -182,10 +182,11 @@ static void doPlayer()
 			(player->bulletCooldown--);
 		}
 
-		// Check if player press fire key(X key) and reload(actually cooldown) is reduced to zero, then fire a bullet.
+		// Check if player press fire key(X key) and reload(actually cooldown) is reduced to zero, then fire a bullet and play the sound.
 		if (app.keyboard[SDL_SCANCODE_X] && player->bulletCooldown == 0)
 		{
 			fireBullet();
+			playSound(SND_PLAYER_FIRE, CH_PLAYER);
 		}
 	}
 }
@@ -405,6 +406,12 @@ static int isBulletHitShooter(EntityStruct* bullet)
 			addExplosions(currShooter->x, currShooter->y, 32);
 			addDebris(currShooter);
 
+			// Play related death sound.
+			if (currShooter == player)
+				playSound(SND_PLAYER_DIE, CH_PLAYER);
+			else
+				playSound(SND_ENEMY_DIE, CH_ANY);
+
 			return 1;
 		}
 	}
@@ -484,8 +491,9 @@ static void doEnemiesAI()
 		// Check if current shooter is not player, player is still alive and current enemy is able to fire next bullet.
 		if (currEnemyPtr != player && player != NULL && --currEnemyPtr->bulletCooldown <= 0)
 		{
-			// Fire the bullet
+			// Fire the bullet and play the sound.
 			fireEnemyBullet(currEnemyPtr);
+			playSound(SND_ENEMY_FIRE, CH_ENEMY_FIRE);
 		}
 	}
 }
@@ -567,12 +575,12 @@ static void initStarfield()
 }
 
 /**
- * @brief Check the background's x position.
+ * @brief Update the background's x position and check for corner case.
 */
-static void checkBackground()
+static void updateBackground()
 {
 	// Check the background's x's border case.
-	if (--backgroundX < -SCREEN_WIDTH)
+	if (++backgroundX > SCREEN_WIDTH)
 	{
 		backgroundX = 0;
 	}
@@ -583,14 +591,15 @@ static void checkBackground()
 */
 static void updateStarfield()
 {
-	// Iterate each star, if its x position is negative, then reset it from the right side of the screen.
+	// Iterate each star, if its x position is larger than the screen width, then reset it from the left side of the screen.
 	for (int i = 0; i < MAX_STAR_NUM; ++i)
 	{
-		stars[i].x -= stars[i].speed;
+		stars[i].x += stars[i].speed;
 
-		if (stars[i].x < 0)
+		if (stars[i].x > SCREEN_WIDTH)
 		{
-			stars[i].x = SCREEN_WIDTH + stars[i].x;
+			// We want a little bit of offset here.
+			stars[i].x = stars[i].x - SCREEN_WIDTH;
 		}
 	}
 }
@@ -776,8 +785,8 @@ static void drawBackground()
 	// A SDL_Rect object holds each background texture's size.
 	SDL_Rect backgroundRect;
 
-	// Sometimes backgroundX is negative thus more than one background may be drew.
-	for (int x = backgroundX; x < SCREEN_WIDTH; x += SCREEN_WIDTH)
+	// Sometimes more than one background may be drew.
+	for (int x = backgroundX; x > -SCREEN_WIDTH; x -= SCREEN_WIDTH)
 	{
 		backgroundRect.x = x;
 		backgroundRect.y = 0;

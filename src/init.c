@@ -22,6 +22,16 @@ void initSDL()
 		exit(1);
 	}
 
+	// Try to initialize the mixer API. I use 44100 (CD quality), default format, 2 channels (stereo) and 1024 for chunksize.
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1)
+	{
+		printf("Couldn't initialize SDL Mixer\n");
+		exit(1);
+	}
+
+	// Set the number of channels being mixed.
+	Mix_AllocateChannels(MAX_SOUND_CHANNEL_NUM);
+
 	// Set up game's window with fullcreen(1280 * 720). 
 	app.window = SDL_CreateWindow("2D Shooter Demo", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, windowFlags);
 

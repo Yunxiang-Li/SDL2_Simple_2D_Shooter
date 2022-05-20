@@ -57,5 +57,26 @@
 // Define the maximum stars' num inside the game background.
 #define MAX_STAR_NUM 500
 
+// Define the maximum number of sound channels of the game(should not be too high).
+#define MAX_SOUND_CHANNEL_NUM 8
+
+// This enum holds all sound channels.
+enum
+{
+	CH_ANY = -1,
+	CH_PLAYER,
+	CH_ENEMY_FIRE
+};
+
+// This enum holds all 4 in-game sounds.
+enum
+{
+	SND_PLAYER_FIRE,
+	SND_ENEMY_FIRE,
+	SND_PLAYER_DIE,
+	SND_ENEMY_DIE,
+	SND_MAX
+};
+
 #endif // DEFS_H
 

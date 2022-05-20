@@ -12,6 +12,7 @@
 #include <SDL_image.h>
 #include "defs.h"
 #include "structs.h"
+#include "SDL_mixer.h"
 
 // Declare an app here to help initialize the game.
 extern AppStruct app;

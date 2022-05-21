@@ -20,12 +20,6 @@
 #define PLAYER_SPEED 5
 #define PLAYER_BULLET_SPEED 20
 
-// Define player and player bullet's size.
-//#define PLAYER_WIDTH 48
-//#define PLAYER_HEIGHT 46
-//#define PLAYER_BULLET_WIDTH 26
-//#define PLAYER_BULLET_HEIGHT 9
-
 // Define player original position
 #define PLAYER_ORIGIN_X 100
 #define PLAYER_ORIGIN_Y 100
@@ -35,14 +29,6 @@
 
 // Define the player's cooldown for next bullet.
 #define PLAYER_BULLET_COOLDOWN 8
-
-//// Define the enemy shooter's width and height.
-//#define ENEMY_WIDTH 48
-//#define ENEMY_HEIGHT 46
-//
-//// Define enemy bullet's width and height.
-//#define ENEMY_BULLET_WIDTH 11
-//#define ENEMY_BULLET_HEIGHT 11
 
 // Define bullet's side(player side or enemy side).
 #define PLAYER_SIDE 0
@@ -77,6 +63,9 @@ enum
 	SND_ENEMY_DIE,
 	SND_MAX
 };
+
+// Define the maximum length of a in-game string.
+#define MAX_LINE_LENGTH 1024
 
 #endif // DEFS_H
 

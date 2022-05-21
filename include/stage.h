@@ -14,12 +14,13 @@
 #include "defs.h"
 #include "structs.h"
 
-extern void blit(SDL_Texture* texture, int x, int y);
-extern void blitRect(SDL_Texture *texture, SDL_Rect *src, int x, int y);
-extern void calcSlope(int x1, int y1, int x2, int y2, float* dx, float* dy);
-extern SDL_Texture* loadTexture(char* filename);
-extern int collision(SDL_Rect* rect1, SDL_Rect* rect2);
-extern void playSound(int id, int channel);
+extern void blit(SDL_Texture*, int, int);
+extern void blitRect(SDL_Texture*, SDL_Rect*, int, int);
+extern void calcSlope(int, int, int, int, float*, float*);
+extern SDL_Texture* loadTexture(char*);
+extern int collision(SDL_Rect*, SDL_Rect*);
+extern void playSound(int, int);
+void drawText(int, int, int, int, int, char*, ...);
 
 extern AppStruct app;
 extern StageStruct stage;

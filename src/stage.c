@@ -27,6 +27,7 @@ static void drawBackground(void);
 static void drawStarfield(void);
 static void drawDebris(void);
 static void drawExplosions(void);
+static void drawHud(void);
 
 // Declare player by pointer.
 static EntityStruct* player;
@@ -50,6 +51,9 @@ static StarStruct stars[MAX_STAR_NUM];
 
 // Declare background's x position.
 static int backgroundX;
+
+// Declare the player's high score.
+static int highscore;
 
 /**
  * @brief Set up all prepare work.
@@ -254,7 +258,7 @@ static void doBullets(void)
 }
 
 /**
- * @brief Draw the background, star field, shooters, bullets, debris and explosions.
+ * @brief Draw the background, star field, shooters, bullets, debris, explosions and Hud.
 */
 static void draw()
 {
@@ -269,6 +273,8 @@ static void draw()
 	drawExplosions();
 
 	drawBullets();
+
+	drawHud();
 }
 
 /**
@@ -410,8 +416,13 @@ static int isBulletHitShooter(EntityStruct* bullet)
 			if (currShooter == player)
 				playSound(SND_PLAYER_DIE, CH_PLAYER);
 			else
+			{
+				// Increment the current score.
+				stage.score++;
+				// Find and store the current high score.
+				highscore = MAX(highscore, stage.score);
 				playSound(SND_ENEMY_DIE, CH_ANY);
-
+			}
 			return 1;
 		}
 	}
@@ -478,6 +489,9 @@ static void resetStage()
 	enemySpawnTimer = 0;
 	// Reset stage reset timer to 3 seconds under 60 FPS case.
 	stageResetTimer = FPS * 3;
+
+	// Reset score to be 0.
+	stage.score = 0;
 }
 
 /**
@@ -829,6 +843,9 @@ static void drawDebris()
 	}
 }
 
+/**
+ * @brief Draw all explosion inside the explosion linked list.
+*/
 static void drawExplosions()
 {
 	// Set render's blend mode as additive blending to draw explosion texture.
@@ -846,4 +863,25 @@ static void drawExplosions()
 
 	// Reset render's blend mode to none.
 	SDL_SetRenderDrawBlendMode(app.renderer, SDL_BLENDMODE_NONE);
+}
+
+/**
+ * @brief Draw in-game Hud.
+*/
+static void drawHud()
+{
+	// Draw player's current score in white on the left side.
+	drawText(10, 10, 255, 255, 255, "SCORE: %03d", stage.score);
+
+	// Draw player's high score on the right side.
+	if (stage.score > 0 && stage.score == highscore)
+	{
+		// If already reaches the high score, then draw in green.
+		drawText(960, 10, 0, 255, 0, "HIGH SCORE: %03d", highscore);
+	}
+	else
+	{
+		// Draw in white.
+		drawText(960, 10, 255, 255, 255, "HIGH SCORE: %03d", highscore);
+	}
 }

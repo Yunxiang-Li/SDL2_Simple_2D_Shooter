@@ -15,7 +15,11 @@ int main(int argc, char* argv[])
 	// Initialize the SDL with a windows and a renderer.
 	initSDL();
 
+	// Initialize the SDL2_mixer.
 	initSounds();
+
+	// Initialize the bitmap font.
+	initFonts();
 
 	// Set up all prepare work for player and bullets.
 	initStage();

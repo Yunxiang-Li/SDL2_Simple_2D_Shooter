@@ -28,15 +28,19 @@ static void drawStarfield(void);
 static void drawDebris(void);
 static void drawExplosions(void);
 static void drawHud(void);
+static void doPointPods(void);
+static void addPointPod(int x, int y);
+static void drawPointPods(void);
 
 // Declare player by pointer.
 static EntityStruct* player;
 
-// Declare textures for player, player's bullet, game background and explosion.
+// Declare textures for player, player's bullet, game background, explosion and pointPod.
 static SDL_Texture* playerTexture;
 static SDL_Texture* playerBulletTexture;
 static SDL_Texture* backgroundTexture;
 static SDL_Texture* explosionTexture;
+static SDL_Texture* pointPodTexture;
 
 // Declare enemy texture, enemy bullet texture and spawn timer.
 static SDL_Texture* enemyTexture;
@@ -66,11 +70,12 @@ void initStage()
 	// Reset the stage struct.
 	memset(&stage, 0, sizeof(StageStruct));
 
-	// Setup four linked lists for shooters, bullets, explosions and debris.
+	// Setup four linked lists for shooters, bullets, explosions, debris and pointPod.
 	stage.shooterTailPtr = &stage.shooterHead;
 	stage.bulletTailPtr = &stage.bulletHead;
 	stage.explosionTailPtr = &stage.explosionHead;
 	stage.debrisTailPtr = &stage.debrisHead;
+	stage.pointPodTailPtr = &stage.bulletHead;
 
 	// Set player and player bullet's texture.
 	playerTexture = loadTexture("Resources/images/player.png");
@@ -83,6 +88,9 @@ void initStage()
 	// Set game background texture, explosion texture.
 	backgroundTexture = loadTexture("Resources/images/background.png");
 	explosionTexture = loadTexture("Resources/images/explosion.png");
+
+	// Set point pod's texture.
+	pointPodTexture = loadTexture("Resources/images/pointPod.png");
 
 	// Reset the whole game stage.
 	resetStage();
@@ -144,6 +152,9 @@ static void logic()
 	// Check player's border.
 	clipPlayer();
 
+	// Update all point pods objects.
+	doPointPods();
+
 	// If player is dead and stage timer is less than zero.
 	if (player == NULL && --stageResetTimer <= 0)
 	{
@@ -165,25 +176,25 @@ static void doPlayer()
 		// Update player's delta movement.
 		if (app.keyboard[SDL_SCANCODE_UP])
 		{
-			player->dy = -PLAYER_SPEED;
+			player->dy -= PLAYER_SPEED;
 		}
 		if (app.keyboard[SDL_SCANCODE_DOWN])
 		{
-			player->dy = PLAYER_SPEED;
+			player->dy += PLAYER_SPEED;
 		}
 		if (app.keyboard[SDL_SCANCODE_LEFT])
 		{
-			player->dx = -PLAYER_SPEED;
+			player->dx -= PLAYER_SPEED;
 		}
 		if (app.keyboard[SDL_SCANCODE_RIGHT])
 		{
-			player->dx = PLAYER_SPEED;
+			player->dx += PLAYER_SPEED;
 		}
 
 		// Reload attribute controls how fast player can fire bullets.
 		if (player->bulletCooldown > 0)
 		{
-			(player->bulletCooldown--);
+			(--player->bulletCooldown);
 		}
 
 		// Check if player press fire key(X key) and reload(actually cooldown) is reduced to zero, then fire a bullet and play the sound.
@@ -258,13 +269,15 @@ static void doBullets(void)
 }
 
 /**
- * @brief Draw the background, star field, shooters, bullets, debris, explosions and Hud.
+ * @brief Draw the background, star field, point pods, shooters, debris, explosions, bullets and Hud.
 */
 static void draw()
 {
 	drawBackground();
 
 	drawStarfield();
+
+	drawPointPods();
 
 	drawShooters();
 
@@ -402,7 +415,7 @@ static int isBulletHitShooter(EntityStruct* bullet)
 		SDL_Rect currShooterRect = { currShooter->x, currShooter->y, currShooter->width, currShooter->height };
 
 		// Check if bullet and shooter have different sides and two SDL_Rect objects do overlap.
-		if (currShooter->side != bullet->side && collision(&bulletRect, &currShooterRect))
+		if (currShooter->side != bullet->side && hasCollision(&bulletRect, &currShooterRect))
 		{
 			// Set bullet and currShooter's health to zero(destroy bullet and currShooter).
 			bullet->health = 0;
@@ -412,15 +425,15 @@ static int isBulletHitShooter(EntityStruct* bullet)
 			addExplosions(currShooter->x, currShooter->y, 32);
 			addDebris(currShooter);
 
-			// Play related death sound.
+			// If player is shot, play player death sound.
 			if (currShooter == player)
 				playSound(SND_PLAYER_DIE, CH_PLAYER);
+			// If enemy is shot.
 			else
 			{
-				// Increment the current score.
-				stage.score++;
-				// Find and store the current high score.
-				highscore = MAX(highscore, stage.score);
+				// Add one point pod object at the center of the enemy object.
+				addPointPod(currShooter->x + currShooter->width / 2, currShooter->y + currShooter->height / 2);
+				// Play enemy death sound.
 				playSound(SND_ENEMY_DIE, CH_ANY);
 			}
 			return 1;
@@ -434,14 +447,15 @@ static int isBulletHitShooter(EntityStruct* bullet)
 */
 static void resetStage()
 {
-	// Declare four pointer to help us free four linked lists.
+	// Declare five pointers to help us free four linked lists.
 	EntityStruct* currShooterPtr;
 	EntityStruct* currBulletPtr;
 	ExplosionStruct* currExplosionPtr;
 	DebrisStruct* currDebrisPtr;
+	EntityStruct* currPointPodPtr;
 
 	// Delete all shooters in the shooter linked list.
-	while (stage.shooterHead.next)
+	while (stage.shooterHead.next != NULL)
 	{
 		currShooterPtr = stage.shooterHead.next;
 		stage.shooterHead.next = currShooterPtr->next;
@@ -449,7 +463,7 @@ static void resetStage()
 	}
 
 	// Delete all bullets in the bullet linked list.
-	while (stage.bulletHead.next)
+	while (stage.bulletHead.next != NULL)
 	{
 		currBulletPtr = stage.bulletHead.next;
 		stage.bulletHead.next = currBulletPtr->next;
@@ -457,7 +471,7 @@ static void resetStage()
 	}
 
 	// Delete all explosions in the explosion linked list.
-	while (stage.explosionHead.next)
+	while (stage.explosionHead.next != NULL)
 	{
 		currExplosionPtr = stage.explosionHead.next;
 		stage.explosionHead.next = currExplosionPtr->next;
@@ -465,19 +479,28 @@ static void resetStage()
 	}
 
 	// Delete all debris in the debris linked list.
-	while (stage.debrisHead.next)
+	while (stage.debrisHead.next != NULL)
 	{
 		currDebrisPtr = stage.debrisHead.next;
 		stage.debrisHead.next = currDebrisPtr->next;
 		free(currDebrisPtr);
 	}
 
-	// Reset the stage struct and four linked lists.
+	// Delete all point pods in the point pod linked list.
+	while (stage.pointPodHead.next != NULL)
+	{
+		currPointPodPtr = stage.pointPodHead.next;
+		stage.pointPodHead.next = currPointPodPtr->next;
+		free(currPointPodPtr);
+	}
+
+	// Reset the stage struct and five linked lists.
 	memset(&stage, 0, sizeof(StageStruct));
 	stage.shooterTailPtr = &stage.shooterHead;
 	stage.bulletTailPtr = &stage.bulletHead;
 	stage.explosionTailPtr = &stage.explosionHead;
 	stage.debrisTailPtr = &stage.debrisHead;
+	stage.pointPodTailPtr = &stage.pointPodHead;
 
 	// Re-initialize the player.
 	initPlayer();
@@ -883,5 +906,125 @@ static void drawHud()
 	{
 		// Draw in white.
 		drawText(960, 10, 255, 255, 255, "HIGH SCORE: %03d", highscore);
+	}
+}
+
+/**
+ * @brief update all point pods from the point pod linked list.
+*/
+static void doPointPods()
+{
+	// Declare two pointers to help traverse the point pod linked list.
+	EntityStruct* prevPointPod;
+	prevPointPod = &stage.pointPodHead;
+	for (EntityStruct* currPointPod = stage.pointPodHead.next; currPointPod != NULL; currPointPod = currPointPod->next)
+	{
+		// Current point pod's x's border check.
+		if (currPointPod->x < 0)
+		{
+			currPointPod->x = 0;
+			currPointPod->dx = -currPointPod->dx;
+		}
+		if (currPointPod->x + currPointPod->width > SCREEN_WIDTH)
+		{
+			currPointPod->x = SCREEN_WIDTH - currPointPod->width;
+			currPointPod->dx = -currPointPod->dx;
+		}
+		// Current point pod's y's border check.
+		if (currPointPod->y < 0)
+		{
+			currPointPod->y = 0;
+			currPointPod->dy = -currPointPod->dy;
+		}
+		if (currPointPod->y + currPointPod->height > SCREEN_HEIGHT)
+		{
+			currPointPod->y = SCREEN_HEIGHT - currPointPod->height;
+			currPointPod->dy = -currPointPod->dy;
+		}
+
+		// Update current point pod's position.
+		currPointPod->x += currPointPod->dx;
+		currPointPod->y += currPointPod->dy;
+
+		// Create SDL_Rect object for current point pod.
+		SDL_Rect currPointPodRect = { currPointPod->x, currPointPod->y, currPointPod->width, currPointPod->height };
+
+		// Check if player is alivet.
+		if (player != NULL)
+		{
+			// Create SDL_Rect object for the player.
+			SDL_Rect playerRect = { player->x, player->y, player->width, player->height };
+			//  Check if player collides with current point pod object.
+			if (hasCollision(&currPointPodRect, &playerRect))
+			{
+				// Set current point pod's health to zero.
+				currPointPod->health = 0;
+
+				// Increment the current score.
+				stage.score++;
+				// Find and store the current high score.
+				highscore = MAX(highscore, stage.score);
+				// player getting point pod's sound.
+				playSound(SND_POINTS, CH_POINTS);
+			}
+		}
+
+		// Decrement current point pod's health by one and check if it is equal to zero.
+		if (--currPointPod->health <= 0)
+		{
+			// Handle tail corner case.
+			if (currPointPod == stage.pointPodTailPtr)
+			{
+				stage.pointPodTailPtr = prevPointPod;
+			}
+			// Delete and reset current point pod object.
+			prevPointPod->next = currPointPod->next;
+			free(currPointPod);
+			currPointPod = prevPointPod;
+		}
+		prevPointPod = currPointPod;
+	}
+}
+
+/**
+ * @brief Create and place a new point pod object at certain position.
+ * @param x An integer indicates the x position of the new point pod object.
+ * @param y An integer indicates the y position of the new point pod object.
+*/
+static void addPointPod(int x, int y)
+{
+	// Create and initialize a new point pod object.
+	EntityStruct* newPointPod = malloc(sizeof(EntityStruct));
+	memset(newPointPod, 0, sizeof(EntityStruct));
+
+	// Add new point pod object to the end of point pod linked list.
+	stage.pointPodTailPtr->next = newPointPod;
+	stage.pointPodTailPtr = newPointPod;
+
+	// Set up the new point pod object's position.
+	newPointPod->x = x;
+	newPointPod->y = y;
+	// Set new point pod object's x axis's delta speed(-4 to 0) and y delta speed(-4 to 4).
+	newPointPod->dx = -(rand() % 5);
+	newPointPod->dy = (rand() % 5) - (rand() % 5);
+	// Set new point object's health(live for 10 seconds) and texture.
+	newPointPod->health = FPS * 10;
+	newPointPod->texture = pointPodTexture;
+	// Set new point pod object's texture's width and height.
+	SDL_QueryTexture(newPointPod->texture, NULL, NULL, &newPointPod->width, &newPointPod->height);
+
+	// Shift new point pod object a little bit to the center.
+	newPointPod->x -= newPointPod->width / 2;
+	newPointPod->y -= newPointPod->height / 2;
+}
+
+/**
+ * @brief Draw each point pod inside the point pod linked list.
+*/
+static void drawPointPods()
+{
+	for (EntityStruct* currPointPod = stage.pointPodHead.next; currPointPod != NULL; currPointPod = currPointPod->next)
+	{
+		blit(currPointPod->texture, currPointPod->x, currPointPod->y);
 	}
 }

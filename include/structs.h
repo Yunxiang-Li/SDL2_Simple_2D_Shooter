@@ -77,7 +77,7 @@ struct DebrisStruct {
 	DebrisStruct* next;
 };
 
-// Struct that hold information about shooters, bullets, explosions, debris and score.
+// Struct that hold information about shooters, bullets, explosions, debris, pointPod and score.
 struct StageStruct {
 	EntityStruct shooterHead;
 	EntityStruct* shooterTailPtr;
@@ -87,6 +87,8 @@ struct StageStruct {
 	ExplosionStruct* explosionTailPtr;
 	DebrisStruct debrisHead;
 	DebrisStruct* debrisTailPtr;
+	EntityStruct pointPodHead;
+	EntityStruct* pointPodTailPtr;
 	int score;
 };
 

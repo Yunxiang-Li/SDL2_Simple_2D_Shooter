@@ -28,6 +28,7 @@ static void loadSounds()
 	sounds[SND_ENEMY_FIRE] = Mix_LoadWAV("Resources/sounds/enemy_fire_sound.ogg");
 	sounds[SND_PLAYER_DIE] = Mix_LoadWAV("Resources/sounds/player_die_sound.ogg");
 	sounds[SND_ENEMY_DIE] = Mix_LoadWAV("Resources/sounds/enemy_die_sound.ogg");
+	sounds[SND_POINTS] = Mix_LoadWAV("Resources/sounds/point_pod_sound.ogg");
 }
 
 /**

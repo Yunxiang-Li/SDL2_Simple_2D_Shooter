@@ -18,7 +18,7 @@ extern void blit(SDL_Texture*, int, int);
 extern void blitRect(SDL_Texture*, SDL_Rect*, int, int);
 extern void calcSlope(int, int, int, int, float*, float*);
 extern SDL_Texture* loadTexture(char*);
-extern int collision(SDL_Rect*, SDL_Rect*);
+extern int hasCollision(SDL_Rect*, SDL_Rect*);
 extern void playSound(int, int);
 void drawText(int, int, int, int, int, char*, ...);
 

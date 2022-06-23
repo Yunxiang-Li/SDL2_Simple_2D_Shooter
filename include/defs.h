@@ -51,16 +51,18 @@ enum
 {
 	CH_ANY = -1,
 	CH_PLAYER,
-	CH_ENEMY_FIRE
+	CH_ENEMY_FIRE,
+	CH_POINTS
 };
 
-// This enum holds all 4 in-game sounds.
+// This enum holds all 5 in-game sounds.
 enum
 {
 	SND_PLAYER_FIRE,
 	SND_ENEMY_FIRE,
 	SND_PLAYER_DIE,
 	SND_ENEMY_DIE,
+	SND_POINTS,
 	SND_MAX
 };
 

@@ -12,17 +12,16 @@ int main(int argc, char* argv[])
 	// Reset app.
 	memset(&app, 0, sizeof(AppStruct));
 
+	app.textureTailPtr = &app.textureHead;
+
 	// Initialize the SDL with a windows and a renderer.
 	initSDL();
 
-	// Initialize the SDL2_mixer.
-	initSounds();
+	// Initialize the whole game perparation.
+	initGame();
 
-	// Initialize the bitmap font.
-	initFonts();
-
-	// Set up all prepare work for player and bullets.
-	initStage();
+	// Initialize highscore feature.
+	initHighscores();
 
 	// Registers cleanup function to be called on normal program termination.
 	atexit(cleanup);

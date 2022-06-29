@@ -4,31 +4,26 @@
 static void logic(void);
 static void draw(void);
 static void initPlayer(void);
-static void doPlayer(void);
-static void doBullets(void);
+static void updatePlayer(void);
+static void updateBullets(void);
 static void fireBullet(void);
 static void drawBullets(void);
-static void doShooters(void);
+static void updateShooters(void);
 static void spawnEnemies(void);
 static void drawShooters(void);
 static int isBulletHitShooter(EntityStruct*);
 static void resetStage(void);
-static void doEnemiesAI(void);
+static void updateEnemiesAI(void);
 static void clipPlayer(void);
 static void fireEnemyBullet(EntityStruct*);
-static void initStarfield(void);
-static void updateBackground(void);
-static void updateStarfield(void);
 static void updateExplosions(void);
 static void updateDebris(void);
 static void addExplosions(int, int, int);
 static void addDebris(EntityStruct*);
-static void drawBackground(void);
-static void drawStarfield(void);
 static void drawDebris(void);
 static void drawExplosions(void);
 static void drawHud(void);
-static void doPointPods(void);
+static void updatePointPods(void);
 static void addPointPod(int x, int y);
 static void drawPointPods(void);
 
@@ -49,15 +44,6 @@ static int enemySpawnTimer;
 
 // Declare the stage reset timer(decrement after player is dead).
 static int stageResetTimer;
-
-// Declare an array to hold Star objects.
-static StarStruct stars[MAX_STAR_NUM];
-
-// Declare background's x position.
-static int backgroundX;
-
-// Declare the player's high score.
-static int highscore;
 
 /**
  * @brief Set up all prepare work.
@@ -86,14 +72,24 @@ void initStage()
 	enemyBulletTexture = loadTexture("Resources/images/enemyBullet.png");
 	
 	// Set game background texture, explosion texture.
-	backgroundTexture = loadTexture("Resources/images/background.png");
+	//backgroundTexture = loadTexture("Resources/images/background.png");
 	explosionTexture = loadTexture("Resources/images/explosion.png");
 
 	// Set point pod's texture.
 	pointPodTexture = loadTexture("Resources/images/pointPod.png");
 
+	// Reset the keyboard state to zero.
+	memset(app.keyboard, 0, sizeof(int) * MAX_KEYBOARD_KEYS);
 	// Reset the whole game stage.
 	resetStage();
+	// Reset score to be 0.
+	stage.score = 0;
+	// Re-initialize the player.
+	initPlayer();
+	// Reset enemy spawn timer.
+	enemySpawnTimer = 0;
+	// Reset stage reset timer to 3 seconds under 60 FPS case.
+	stageResetTimer = FPS * 3;
 }
 
 /**
@@ -131,20 +127,20 @@ static void logic()
 	updateStarfield();
 
 	// Update player.
-	doPlayer();
+	updatePlayer();
 
 	// Update enemies' simple AI.
-	doEnemiesAI();
+	updateEnemiesAI();
 
 	// Update all shooters' positions.
-	doShooters();
+	updateShooters();
 
 	// Update explosions and debris.
 	updateExplosions();
 	updateDebris();
 
 	// Update all bullets.
-	doBullets();
+	updateBullets();
 
 	// Spawn enemies.
 	spawnEnemies();
@@ -153,19 +149,20 @@ static void logic()
 	clipPlayer();
 
 	// Update all point pods objects.
-	doPointPods();
+	updatePointPods();
 
-	// If player is dead and stage timer is less than zero.
+	// If player is dead and stage timer is less than zero, update the highscore table with latest score and re-initialize highscore feature.
 	if (player == NULL && --stageResetTimer <= 0)
 	{
-		resetStage();
+		addHighscore(stage.score);
+		initHighscores();
 	}
 }
 
 /**
  * @brief Update the player's states if player is still alive.
 */
-static void doPlayer()
+static void updatePlayer()
 {
 	if (player != NULL)
 	{
@@ -237,7 +234,7 @@ static void fireBullet()
 /**
  * @brief Update the bullet's states.
 */
-static void doBullets(void)
+static void updateBullets(void)
 {
 	// Initialize two EntityStruct pointers as dummy head and start node of the bullet linked list.
 	EntityStruct* prev = &stage.bulletHead;
@@ -304,7 +301,7 @@ static void drawBullets()
 /**
  * @brief update all shooters' positions(including player)
 */
-static void doShooters()
+static void updateShooters()
 {
 	// Initialize two EntityStruct pointers as two start nodes of the shooter linked list.
 	EntityStruct* curr, * prev;
@@ -443,7 +440,7 @@ static int isBulletHitShooter(EntityStruct* bullet)
 }
 
 /**
- * @brief Reset the whole game stage.
+ * @brief Reset all five linked lists.
 */
 static void resetStage()
 {
@@ -501,26 +498,12 @@ static void resetStage()
 	stage.explosionTailPtr = &stage.explosionHead;
 	stage.debrisTailPtr = &stage.debrisHead;
 	stage.pointPodTailPtr = &stage.pointPodHead;
-
-	// Re-initialize the player.
-	initPlayer();
-
-	// Re-initialize the whole star field.
-	initStarfield();
-
-	// Reset enemy spawn timer.
-	enemySpawnTimer = 0;
-	// Reset stage reset timer to 3 seconds under 60 FPS case.
-	stageResetTimer = FPS * 3;
-
-	// Reset score to be 0.
-	stage.score = 0;
 }
 
 /**
  * @brief Update enemies AI.
 */
-static void doEnemiesAI()
+static void updateEnemiesAI()
 {
 	// Loop throught the shooter linked list.
 	for (EntityStruct* currEnemyPtr = stage.shooterHead.next; currEnemyPtr != NULL; currEnemyPtr = currEnemyPtr->next)
@@ -593,50 +576,6 @@ static void clipPlayer()
 		if (player->y > SCREEN_HEIGHT - player->height)
 		{
 			player->y = SCREEN_HEIGHT - player->height;
-		}
-	}
-}
-
-/**
- * @brief Initialize 500 star objects at random position with random speed.
-*/
-static void initStarfield()
-{
-	// Generate each star object's position and speed(this will also affect star's brightness).
-	for (int i = 0; i < MAX_STAR_NUM; ++i)
-	{
-		stars[i].x = rand() % SCREEN_WIDTH;
-		stars[i].y = rand() % SCREEN_HEIGHT;
-		stars[i].speed = 1 + rand() % 8;
-	}
-}
-
-/**
- * @brief Update the background's x position and check for corner case.
-*/
-static void updateBackground()
-{
-	// Check the background's x's border case.
-	if (++backgroundX > SCREEN_WIDTH)
-	{
-		backgroundX = 0;
-	}
-}
-
-/**
- * @brief Update the whole star field(including every star object) linked list.
-*/
-static void updateStarfield()
-{
-	// Iterate each star, if its x position is larger than the screen width, then reset it from the left side of the screen.
-	for (int i = 0; i < MAX_STAR_NUM; ++i)
-	{
-		stars[i].x += stars[i].speed;
-
-		if (stars[i].x > SCREEN_WIDTH)
-		{
-			// We want a little bit of offset here.
-			stars[i].x = stars[i].x - SCREEN_WIDTH;
 		}
 	}
 }
@@ -815,46 +754,6 @@ static void addDebris(EntityStruct* spaceshipPtr)
 }
 
 /**
- * @brief Draw the game's whole background.
-*/
-static void drawBackground()
-{
-	// A SDL_Rect object holds each background texture's size.
-	SDL_Rect backgroundRect;
-
-	// Sometimes more than one background may be drew.
-	for (int x = backgroundX; x > -SCREEN_WIDTH; x -= SCREEN_WIDTH)
-	{
-		backgroundRect.x = x;
-		backgroundRect.y = 0;
-		backgroundRect.w = SCREEN_WIDTH;
-		backgroundRect.h = SCREEN_HEIGHT;
-
-		SDL_RenderCopy(app.renderer, backgroundTexture, NULL, &backgroundRect);
-	}
-}
-
-/**
- * @brief Draw all stars(each star is a line).
-*/
-static void drawStarfield()
-{
-	int value;
-
-	// Set each star's red, green and blue vaue and draw each star.
-	for (int i = 0; i < MAX_STAR_NUM; ++i)
-	{
-		// Higher the speed of the star, brighter the color.
-		value = 32 * stars[i].speed;
-
-		SDL_SetRenderDrawColor(app.renderer, value, value, value, 255);
-
-		// Each line is has distance of 3.
-		SDL_RenderDrawLine(app.renderer, stars[i].x, stars[i].y, stars[i].x + 3, stars[i].y);
-	}
-}
-
-/**
  * @brief Draw all debris inside the debris linked list.
 */
 static void drawDebris()
@@ -897,22 +796,22 @@ static void drawHud()
 	drawText(10, 10, 255, 255, 255, "SCORE: %03d", stage.score);
 
 	// Draw player's high score on the right side.
-	if (stage.score > 0 && stage.score == highscore)
+	if (stage.score > 0 && stage.score >= highscoreTable.highscore[0].score)
 	{
 		// If already reaches the high score, then draw in green.
-		drawText(960, 10, 0, 255, 0, "HIGH SCORE: %03d", highscore);
+		drawText(960, 10, 0, 255, 0, "HIGH SCORE: %03d", stage.score);
 	}
 	else
 	{
 		// Draw in white.
-		drawText(960, 10, 255, 255, 255, "HIGH SCORE: %03d", highscore);
+		drawText(960, 10, 255, 255, 255, "HIGH SCORE: %03d", highscoreTable.highscore[0].score);
 	}
 }
 
 /**
  * @brief update all point pods from the point pod linked list.
 */
-static void doPointPods()
+static void updatePointPods()
 {
 	// Declare two pointers to help traverse the point pod linked list.
 	EntityStruct* prevPointPod;
@@ -961,9 +860,7 @@ static void doPointPods()
 				currPointPod->health = 0;
 
 				// Increment the current score.
-				stage.score++;
-				// Find and store the current high score.
-				highscore = MAX(highscore, stage.score);
+				++stage.score;
 				// player getting point pod's sound.
 				playSound(SND_POINTS, CH_POINTS);
 			}

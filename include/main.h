@@ -21,9 +21,12 @@ extern void prepareScene(void);
 extern void presentScene(void);
 extern void initSounds(void);
 extern void initFonts(void);
+extern void initGame(void);
+extern void initHighscores(void);
 
-// Declare app, stage here.
+// Create app, stage and highscore table.
 AppStruct app;
 StageStruct stage;
+HighscoreTableStruct highscoreTable;
 
 #endif // MAIN_H

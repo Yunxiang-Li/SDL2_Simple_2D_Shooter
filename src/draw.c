@@ -1,8 +1,11 @@
 #include "draw.h"
 
+// Forward declarations.
+static SDL_Texture* getTexture(char*);
+static void storeTexture(char*, SDL_Texture*);
+
 /**
  * @brief Prepare renderer to draw.
- *
  */
 void prepareScene(void)
 {
@@ -14,8 +17,6 @@ void prepareScene(void)
 
 /**
  * @brief Update the screen with backbuffer.
- *
- *
  */
 void presentScene(void)
 {
@@ -29,13 +30,20 @@ void presentScene(void)
 */
 SDL_Texture* loadTexture(char* filename)
 {
+	// Try to retrieve the specified texture from storage.
 	SDL_Texture* texturePtr;
+	texturePtr = getTexture(filename);
 
-	// Set the log category to be application log, priority to be info, message is "Loading file name".
-	SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Loading %s", filename);
-
-	// Load input file, create surface and generate the texture.
-	texturePtr = IMG_LoadTexture(app.renderer, filename);
+	// If not stored before.
+	if (texturePtr == NULL)
+	{
+		// Set the log category to be application log, priority to be info, message is "Loading file name".
+		SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Loading %s", filename);
+		// Load input file, create surface and generate the texture.
+		texturePtr = IMG_LoadTexture(app.renderer, filename);
+		// Store the specified texture into storage.
+		storeTexture(filename, texturePtr);
+	}
 
 	return texturePtr;
 }
@@ -82,4 +90,44 @@ void blitRect(SDL_Texture* texturePtr, SDL_Rect* srcPtr, int x, int y)
 
 	// Render input texture into dest with specified rect size.
 	SDL_RenderCopy(app.renderer, texturePtr, srcPtr, &dest);
+}
+
+/**
+ * @brief Get the pointer of SDL_Texture according to input filename.
+ * @param name A pointer of char indicates the filename.
+ * @return A pointer of SDL_Texture indicates the SDL_Texture we need.
+*/
+static SDL_Texture* getTexture(char* name)
+{
+	// Traverse the texture linked list and try to retrieve the specified one.
+	for (TextureStruct* currTexturePtr = app.textureHead.next; currTexturePtr != NULL; currTexturePtr = currTexturePtr->next)
+	{
+		if (strcmp(currTexturePtr->name, name) == 0)
+		{
+			return currTexturePtr->texture;
+		}
+	}
+	return NULL;
+}
+
+/**
+ * @brief Store the input named SDL_Texture as a new TextureStruct object inside the TextureStruct linked list.
+ * @param name A pointer of char indicates the name of input SDL_Texture object.
+ * @param sdlTexture  A pointer of SDL_Texture indicates the input SDL_Texture object.
+*/
+static void storeTexture(char* name, SDL_Texture* sdlTexture)
+{
+	// Create and initialize a new TextureStruct object.
+	TextureStruct* newTexture = malloc(sizeof(TextureStruct));
+	memset(newTexture, 0, sizeof(TextureStruct));
+
+	// Insert the newly created TextureStruct at the tail.
+	app.textureTailPtr->next = newTexture;
+	app.textureTailPtr = newTexture;
+
+	// Set new TextureStruct's name the same as input and add tail null terminator.
+	strncpy_s(newTexture->name, MAX_TEXTURE_NAME_LEN, name, MAX_TEXTURE_NAME_LEN);
+
+	// Set new TextureStruct's texture.
+	newTexture->texture = sdlTexture;
 }

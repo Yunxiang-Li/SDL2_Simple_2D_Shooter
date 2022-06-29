@@ -14,6 +14,15 @@
 #include "structs.h"
 #include "SDL_mixer.h"
 
+// Extern declarations.
+extern void initBackground(void);
+extern void initFonts(void);
+extern void initHighscoreTable(void);
+extern void initSounds(void);
+extern void initStarfield(void);
+extern void loadMusic(char*);
+extern void playMusic(int);
+
 // Declare an app here to help initialize the game.
 extern AppStruct app;
 

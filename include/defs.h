@@ -9,7 +9,6 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
 // Define the game screen width and height here.
-
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 
@@ -46,6 +45,15 @@
 // Define the maximum number of sound channels of the game(should not be too high).
 #define MAX_SOUND_CHANNEL_NUM 8
 
+// Define the maximum length of a in-game string.
+#define MAX_LINE_LENGTH 1024
+
+// Define the maximum length of a texture's name.
+#define MAX_TEXTURE_NAME_LEN 100
+
+// Define the maximum rows' number of the highscore table.
+#define HIGHSCORE_TABLE_ROW_NUM 8
+
 // This enum holds all sound channels.
 enum
 {
@@ -65,9 +73,6 @@ enum
 	SND_POINTS,
 	SND_MAX
 };
-
-// Define the maximum length of a in-game string.
-#define MAX_LINE_LENGTH 1024
 
 #endif // DEFS_H
 

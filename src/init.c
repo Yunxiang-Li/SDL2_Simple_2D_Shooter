@@ -69,11 +69,31 @@ void initSDL()
  * @brief Clean up the game and quit.
  *
  */
-void cleanup(void)
+void cleanup()
 {
 	SDL_DestroyRenderer(app.renderer);
 
 	SDL_DestroyWindow(app.window);
 
 	SDL_Quit();
+}
+
+/**
+ * @brief Initialize all game preparations including background, starfield, sounds, fonts, highscore table and play the main music.
+*/
+void initGame()
+{
+	initBackground();
+
+	initStarfield();
+
+	initSounds();
+
+	initFonts();
+
+	initHighscoreTable();
+
+	// Load and play the main music.
+	loadMusic("Resources/music/Mercury.ogg");
+	playMusic(1);
 }

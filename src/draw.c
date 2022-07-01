@@ -126,7 +126,8 @@ static void storeTexture(char* name, SDL_Texture* sdlTexture)
 	app.textureTailPtr = newTexture;
 
 	// Set new TextureStruct's name the same as input and add tail null terminator.
-	strncpy_s(newTexture->name, MAX_TEXTURE_NAME_LEN, name, MAX_TEXTURE_NAME_LEN);
+	strncpy(newTexture->name, name, MAX_TEXTURE_NAME_LEN);
+	newTexture->name[MAX_TEXTURE_NAME_LEN - 1] = '\0';
 
 	// Set new TextureStruct's texture.
 	newTexture->texture = sdlTexture;

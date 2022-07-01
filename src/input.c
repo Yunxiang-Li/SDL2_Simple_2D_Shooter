@@ -11,7 +11,8 @@ void doKeyUp(SDL_KeyboardEvent*);
 void doInput()
 {
     SDL_Event event;
-
+    // Reset app's input text array.
+    memset(app.inputTextArray, '\0', MAX_LINE_LENGTH);
     // Check if pending events exist.
     while (SDL_PollEvent(&event) != 0)
     {
@@ -32,8 +33,8 @@ void doInput()
             // Check if player input texts.
             case SDL_TEXTINPUT:
                 // Store input texts inside app's input text array and deal with the null terminator.
-                strncpy_s(app.inputTextArray, MAX_LINE_LENGTH, event.text.text, MAX_LINE_LENGTH);
-                app.inputTextArray[MAX_LINE_LENGTH - 1] = '\0';
+                strncpy(app.inputTextArray, event.text.text, MAX_LINE_LENGTH);
+                //app.inputTextArray[MAX_LINE_LENGTH - 1] = '\0';
                 break;
             default:
                 break;

@@ -799,12 +799,12 @@ static void drawHud()
 	if (stage.score > 0 && stage.score >= highscoreTable.highscore[0].score)
 	{
 		// If already reaches the high score, then draw in green.
-		drawText(960, 10, 0, 255, 0, TEXT_RIGHT, "HIGH SCORE: %03d", stage.score);
+		drawText(SCREEN_WIDTH - 10, 10, 0, 255, 0, TEXT_RIGHT, "HIGH SCORE: %03d", stage.score);
 	}
 	else
 	{
 		// Draw in white.
-		drawText(960, 10, 255, 255, 255, TEXT_RIGHT, "HIGH SCORE: %03d", highscoreTable.highscore[0].score);
+		drawText(SCREEN_WIDTH - 10, 10, 255, 255, 255, TEXT_RIGHT, "HIGH SCORE: %03d", highscoreTable.highscore[0].score);
 	}
 }
 

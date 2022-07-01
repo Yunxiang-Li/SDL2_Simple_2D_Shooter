@@ -25,7 +25,8 @@ void initHighscoreTable()
 		// Each score will be updated as the default value(0).
 		highscoreTable.highscore[i].score = 0;
 		// Each player name will be updated as default name("ANONYMOUS").
-		strncpy_s(highscoreTable.highscore[i].nameArray, MAX_SCORE_NAME_LENGTH, "ANONYMOUS", MAX_SCORE_NAME_LENGTH);
+		strncpy(highscoreTable.highscore[i].nameArray, "ANONYMOUS", MAX_SCORE_NAME_LENGTH);
+		highscoreTable.highscore[i].nameArray[MAX_SCORE_NAME_LENGTH - 1] = '\0';
 	}
 
 	// Initialize new highscore pointer and cursor blink timer.
@@ -165,6 +166,9 @@ void addHighscore(int score)
 	// Create an array of HighScoreStruct objects with one more size than HighScoreTableStruct.
 	HighscoreStruct tempHighscoreTable[HIGHSCORE_TABLE_ROW_NUM + 1];
 
+	// Initialize each attribute to zero.
+	memset(tempHighscoreTable, 0, sizeof(HighscoreStruct) * (HIGHSCORE_TABLE_ROW_NUM + 1));
+
 	// Traverse and store each current high score into temp highscore table and reset each recent attribute to zero.
 	for (int i = 0; i < HIGHSCORE_TABLE_ROW_NUM; ++i)
 	{
@@ -243,7 +247,7 @@ static void updateInputName()
 	{
 		if (strlen(newHighscorePtr->nameArray) == 0)
 		{
-			strncpy_s(newHighscorePtr->nameArray, MAX_SCORE_NAME_LENGTH, "ANONYMOUS", MAX_SCORE_NAME_LENGTH);
+			strncpy(newHighscorePtr->nameArray, "ANONYMOUS", MAX_SCORE_NAME_LENGTH);
 			newHighscorePtr->nameArray[MAX_SCORE_NAME_LENGTH - 1] = '\0';
 		}
 		newHighscorePtr = NULL;

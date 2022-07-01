@@ -23,7 +23,7 @@ extern void updateBackground(void);
 extern void updateStarfield(void);
 extern void drawBackground(void);
 extern void drawStarfield(void);
-extern void drawText(int x, int y, int r, int g, int b, char* format, ...);
+extern void drawText(int, int, int, int, int, int, char*, ...);
 extern void initStage(void);
 
 #endif // HIGHSCORES_H

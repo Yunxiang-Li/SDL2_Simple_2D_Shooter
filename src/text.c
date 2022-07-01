@@ -19,10 +19,11 @@ void initFonts()
  * @param r An integer indicates the red value of our drawing color.
  * @param g An integer indicates the green value of our drawing color.
  * @param b An integer indicates the blue value of our drawing color.
+ * @param align An integer indicates the alignment of the text.
  * @param textPtr An pointer of char indicates the input text.
  * @param ... Additionally parameters for text formatting.
 */
-void drawText(int x, int y, int r, int g, int b, char* textPtr, ...)
+void drawText(int x, int y, int r, int g, int b, int align, char* textPtr, ...)
 {
 	// Clear the buffer.
 	memset(&drawTextBuffer, '\0', sizeof(drawTextBuffer));
@@ -37,6 +38,18 @@ void drawText(int x, int y, int r, int g, int b, char* textPtr, ...)
 
 	// Get the buffer's length.
 	int len = strlen(drawTextBuffer);
+
+	// Check if text should be aligned in the center or the right of screen(default x position will be the left of screen).
+	switch (align)
+	{
+	case TEXT_RIGHT:
+		x -= (len * LETTER_WIDTH);
+		break;
+
+	case TEXT_CENTER:
+		x -= ((len * LETTER_WIDTH) / 2);
+		break;
+	}
 
 	// Set each letter's related SDL_Rect.
 	SDL_Rect rect;

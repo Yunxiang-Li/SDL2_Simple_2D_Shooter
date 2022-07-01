@@ -1,5 +1,4 @@
 // Include all defined variables here.
-
 #pragma once
 #ifndef DEFS_H
 #define DEFS_H
@@ -54,6 +53,13 @@
 // Define the maximum rows' number of the highscore table.
 #define HIGHSCORE_TABLE_ROW_NUM 8
 
+// Define the maximum length of player name.
+#define MAX_SCORE_NAME_LENGTH 32
+
+// Define each letter's width and height.
+#define LETTER_HEIGHT    28
+#define LETTER_WIDTH     18
+
 // This enum holds all sound channels.
 enum
 {
@@ -72,6 +78,14 @@ enum
 	SND_ENEMY_DIE,
 	SND_POINTS,
 	SND_MAX
+};
+
+// This enum is used to specify the alignment of the text.
+enum
+{
+	TEXT_LEFT,
+	TEXT_CENTER,
+	TEXT_RIGHT
 };
 
 #endif // DEFS_H

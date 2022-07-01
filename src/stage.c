@@ -793,18 +793,18 @@ static void drawExplosions()
 static void drawHud()
 {
 	// Draw player's current score in white on the left side.
-	drawText(10, 10, 255, 255, 255, "SCORE: %03d", stage.score);
+	drawText(10, 10, 255, 255, 255, TEXT_LEFT, "SCORE: %03d", stage.score);
 
 	// Draw player's high score on the right side.
 	if (stage.score > 0 && stage.score >= highscoreTable.highscore[0].score)
 	{
 		// If already reaches the high score, then draw in green.
-		drawText(960, 10, 0, 255, 0, "HIGH SCORE: %03d", stage.score);
+		drawText(960, 10, 0, 255, 0, TEXT_RIGHT, "HIGH SCORE: %03d", stage.score);
 	}
 	else
 	{
 		// Draw in white.
-		drawText(960, 10, 255, 255, 255, "HIGH SCORE: %03d", highscoreTable.highscore[0].score);
+		drawText(960, 10, 255, 255, 255, TEXT_RIGHT, "HIGH SCORE: %03d", highscoreTable.highscore[0].score);
 	}
 }
 

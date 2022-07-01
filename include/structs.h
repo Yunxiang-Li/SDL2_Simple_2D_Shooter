@@ -1,7 +1,6 @@
 // This class contains all used struct in the game.
 
 #pragma once
-
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
@@ -15,8 +14,8 @@ typedef struct DelegateStruct DelegateStruct;
 typedef struct AppStruct AppStruct;
 typedef struct StageStruct StageStruct;
 typedef struct StarStruct StarStruct;
-typedef struct HighscoreStruct HighScoreStruct;
-typedef struct HighScoreTableStruct HighscoreTableStruct;
+typedef struct HighscoreStruct HighscoreStruct;
+typedef struct HighscoreTableStruct HighscoreTableStruct;
 typedef struct TextureStruct TextureStruct;
 
 // Struct that acts like a delegate of processing logic and render parts of the game.
@@ -34,7 +33,7 @@ struct TextureStruct
 	TextureStruct* next;
 };
 
-// Struct that holds window pointer, render pointers, delegate struct, keyboard states and texture linked list head and tail pointer.
+// Struct that holds window pointer, render pointers, delegate struct, keyboard states, input text array, texture linked list head and tail pointer.
 struct AppStruct 
 {
 	SDL_Renderer* renderer;
@@ -46,6 +45,8 @@ struct AppStruct
 	// The head and the tail pointer of the texture linked list.
 	TextureStruct textureHead;
 	TextureStruct* textureTailPtr;
+	// A char array to hold input texts.
+	char inputTextArray[MAX_LINE_LENGTH];
 };
 
 // Struct that holds each entity's attributes.
@@ -127,12 +128,15 @@ struct HighscoreStruct
 	int recent;
 
 	int score;
+
+	// A char array to hold player's name(last position is reserved for null terminator).
+	char nameArray[MAX_SCORE_NAME_LENGTH];
 };
 
 // Struct that holds all highscores inside an array of HighScoreStruct.
-struct HighScoreTableStruct
+struct HighscoreTableStruct
 {
-	HighScoreStruct highscore[HIGHSCORE_TABLE_ROW_NUM];
+	HighscoreStruct highscore[HIGHSCORE_TABLE_ROW_NUM];
 };
 
 #endif // STRUCTS_H

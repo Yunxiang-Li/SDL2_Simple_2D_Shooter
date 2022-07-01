@@ -18,8 +18,4 @@
 extern SDL_Texture* loadTexture(char*);
 extern void blitRect(SDL_Texture*, SDL_Rect*, int, int);
 
-// Define each letter's width and height.
-#define LETTER_HEIGHT    28
-#define LETTER_WIDTH     18
-
 #endif // TEXT_H

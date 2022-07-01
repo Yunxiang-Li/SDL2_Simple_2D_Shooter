@@ -29,9 +29,14 @@ void doInput()
             case SDL_KEYUP:
                 doKeyUp(&(event.key));
                 break;
+            // Check if player input texts.
+            case SDL_TEXTINPUT:
+                // Store input texts inside app's input text array and deal with the null terminator.
+                strncpy_s(app.inputTextArray, MAX_LINE_LENGTH, event.text.text, MAX_LINE_LENGTH);
+                app.inputTextArray[MAX_LINE_LENGTH - 1] = '\0';
+                break;
             default:
                 break;
-
         }
     }
 }

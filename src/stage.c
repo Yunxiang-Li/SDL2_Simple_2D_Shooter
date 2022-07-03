@@ -48,7 +48,7 @@ static int stageResetTimer;
 /**
  * @brief Set up all prepare work.
 */
-void initStage()
+void switchToStage()
 {
 	// Bind logic and draw functions.
 	app.delegate.logic = logic;
@@ -151,11 +151,11 @@ static void logic()
 	// Update all point pods objects.
 	updatePointPods();
 
-	// If player is dead and stage timer is less than zero, update the highscore table with latest score and re-initialize highscore feature.
+	// If player is dead and stage timer is less than zero, update the highscore table with latest score and switch to highscore scene.
 	if (player == NULL && --stageResetTimer <= 0)
 	{
 		addHighscore(stage.score);
-		initHighscores();
+		switchToHighscoreScene();
 	}
 }
 
@@ -375,6 +375,10 @@ static void spawnEnemies()
 		// Set each enemy's delta movement on X axis(between -2 and -5).
 		enemy->dx = -(2 + (rand() % 4));
 
+		// Set each enemy's delta movement on Y axis(between -1 and 1).
+		enemy->dy = -100 + (rand() % 200);
+		enemy->dy /= 100;
+
 		// Set next enemy's spawn time to a integer from 30 to 89.
 		enemySpawnTimer = FPS/2 + (rand() % FPS);
 		// Set enemy's side.
@@ -508,12 +512,18 @@ static void updateEnemiesAI()
 	// Loop throught the shooter linked list.
 	for (EntityStruct* currEnemyPtr = stage.shooterHead.next; currEnemyPtr != NULL; currEnemyPtr = currEnemyPtr->next)
 	{
-		// Check if current shooter is not player, player is still alive and current enemy is able to fire next bullet.
-		if (currEnemyPtr != player && player != NULL && --currEnemyPtr->bulletCooldown <= 0)
+		// Check if current shooter is not player.
+		if (currEnemyPtr != player)
 		{
-			// Fire the bullet and play the sound.
-			fireEnemyBullet(currEnemyPtr);
-			playSound(SND_ENEMY_FIRE, CH_ENEMY_FIRE);
+			// Update current enemy's y position to prevent enemy out of the screen issue.
+			currEnemyPtr->y = MIN(MAX(currEnemyPtr->y, currEnemyPtr->height), SCREEN_HEIGHT);
+			// Check if player is still alive and current enemy is able to fire next bullet.
+			if (player != NULL && --currEnemyPtr->bulletCooldown <= 0)
+			{
+				// Fire the bullet and play the sound.
+				fireEnemyBullet(currEnemyPtr);
+				playSound(SND_ENEMY_FIRE, CH_ENEMY_FIRE);
+			}
 		}
 	}
 }
@@ -922,6 +932,11 @@ static void drawPointPods()
 {
 	for (EntityStruct* currPointPod = stage.pointPodHead.next; currPointPod != NULL; currPointPod = currPointPod->next)
 	{
-		blit(currPointPod->texture, currPointPod->x, currPointPod->y);
+		// If current point pod's lifetime is greater than 2 seconds then draw it. 
+		// Otherwise, only draw the point pod per 6 frames.
+		if (currPointPod->health > (FPS * 2) || currPointPod->health % 12 < 6)
+		{
+			blit(currPointPod->texture, currPointPod->x, currPointPod->y);
+		}
 	}
 }

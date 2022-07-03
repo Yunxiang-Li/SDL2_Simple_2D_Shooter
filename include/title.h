@@ -1,7 +1,6 @@
-// Include all features related to highscores.
 #pragma once
-#ifndef HIGHSCORES_H
-#define HIGHSCORES_H
+#ifndef TITLE_H
+#define TITLE_H
 
 #include "stdlib.h"
 #include "stdio.h"
@@ -9,23 +8,21 @@
 #include "math.h"
 #include "ctype.h"
 
-#include <SDL.h>
+#include "SDL.h"
 
 #include "defs.h"
 #include "structs.h"
 
-// Declare the app and highscore table here to help process the highscore related features.
+// Extern declarations.
 extern AppStruct app;
-extern HighscoreTableStruct highscoreTable;
-
-// Extern functions declarations.
+extern SDL_Texture* loadTexture(char*);
 extern void updateBackground(void);
 extern void updateStarfield(void);
+extern void switchToHighscoreScene(void);
+extern void switchToStage(void);
 extern void drawBackground(void);
 extern void drawStarfield(void);
+extern void blitRect(SDL_Texture*, SDL_Rect*, int, int);
 extern void drawText(int, int, int, int, int, int, char*, ...);
-extern void switchToStage(void);
-extern void switchToTitleScreen(void);
 
-#endif // HIGHSCORES_H
-
+#endif // !TITLE_H

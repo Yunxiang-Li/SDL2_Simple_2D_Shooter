@@ -20,8 +20,8 @@ int main(int argc, char* argv[])
 	// Initialize the whole game perparation.
 	initGame();
 
-	// Initialize highscore feature.
-	initHighscores();
+	// Set titlescreen as the first game scene.
+	switchToTitleScreen();
 
 	// Registers cleanup function to be called on normal program termination.
 	atexit(cleanup);

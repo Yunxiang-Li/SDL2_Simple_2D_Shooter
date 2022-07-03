@@ -26,7 +26,7 @@ extern void updateStarfield(void);
 extern void drawBackground(void);
 extern void drawStarfield(void);
 extern void drawText(int, int, int, int, int, int, char*, ...);
-extern void initHighscores(void);
+extern void switchToHighscoreScene(void);
 extern void playSound(int, int);
 
 extern HighscoreTableStruct highscoreTable;

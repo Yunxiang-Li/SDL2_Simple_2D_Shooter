@@ -12,6 +12,8 @@ static void updateInputName(void);
 static HighscoreStruct* newHighscorePtr;
 // Declare a integer indicates the timer which controls if the cursor is blink or not.
 static int cursorBlinkTimer;
+// Declare an integer indicates the interval between highscore scene and 
+static int timeInterval;
 
 /**
  * @brief Intialize the highscore table.
@@ -35,19 +37,22 @@ void initHighscoreTable()
 }
 
 /**
- * @brief Assign our delegate function (highscore_logic and highscore_draw) pointers to locally declared app object and clears its keyboard entry
- * to prevent the game from jumping between the highscore table scene and the game scene itself.
+ * @brief Assign our delegate function pointers to app object, clear keyboard states
+ * to prevent the game from jumping between the highscore table scene and the game scene itself.and initialize the time interval.
+ * 
 */
-void initHighscores()
+void switchToHighscoreScene()
 {
 	app.delegate.logic = highscoreSceneLogic;
 	app.delegate.draw = highscoreSceneDraw;
 
 	memset(app.keyboard, 0, sizeof(int) * MAX_KEYBOARD_KEYS);
+	// Initialize time interval to be 5 seconds under 60 fps condition.
+	timeInterval = FPS * 5;
 }
 
 /**
- * @brief A bound callback to handle all in game updates.Handles updates of the background and starfield.
+ * @brief A bound callback to handle all highscore scene updates.
 */
 static void highscoreSceneLogic()
 {
@@ -60,9 +65,18 @@ static void highscoreSceneLogic()
 		updateInputName();
 	}
 	// If the X key is pressed, the initStage function is called to start the game.
-	else if (app.keyboard[SDL_SCANCODE_X])
+	else
 	{
-		initStage();
+		if (app.keyboard[SDL_SCANCODE_X])
+		{
+			switchToStage();
+		}
+		
+		// If interval is less than or equal to zero, then switch to titlescreen.
+		if (--timeInterval <= 0)
+		{
+			switchToTitleScreen();
+		}
 	}
 
 	// Reset cursor blink timer to zero after 1 second.
@@ -89,6 +103,11 @@ static void highscoreSceneDraw()
 	else
 	{
 		drawHighscoreTable();
+
+		if (timeInterval % 20 < 10)
+		{
+			drawText(SCREEN_WIDTH / 2, 600, 255, 255, 255, TEXT_CENTER, "PRESS FIRE(X) TO PLAY!");
+		}
 	}
 }
 

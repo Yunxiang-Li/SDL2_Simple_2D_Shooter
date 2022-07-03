@@ -16,13 +16,14 @@
 extern void cleanup(void);
 extern void doInput(void);
 extern void initSDL(void);
-extern void initStage(void);
+extern void switchToStage(void);
 extern void prepareScene(void);
 extern void presentScene(void);
 extern void initSounds(void);
 extern void initFonts(void);
 extern void initGame(void);
-extern void initHighscores(void);
+extern void switchToHighscoreScene(void);
+extern void switchToTitleScreen(void);
 
 // Create app, stage and highscore table.
 AppStruct app;

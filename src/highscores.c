@@ -7,6 +7,7 @@ static void drawHighscoreTable(void);
 static int highscoreComparator(const void*, const void*);
 static void drawInputNameScene(void);
 static void updateInputName(void);
+static int tryToLoadHighscoreFile(int currLine);
 
 // Declare a HighscoreStruct pointer indicates one new highscore.
 static HighscoreStruct* newHighscorePtr;
@@ -21,19 +22,71 @@ static int timeInterval;
 void initHighscoreTable()
 {
 	memset(&highscoreTable, 0, sizeof(HighscoreTableStruct));
+	// Try to load previous highscore data if exist.
+	int nextLineIdx = tryToLoadHighscoreFile(0);
 
-	for (int i = 0; i < HIGHSCORE_TABLE_ROW_NUM; ++i)
+	// Set up other rows.
+	for (int i = nextLineIdx; i < HIGHSCORE_TABLE_ROW_NUM; ++i)
 	{
 		// Each score will be updated as the default value(0).
 		highscoreTable.highscore[i].score = 0;
 		// Each player name will be updated as default name("ANONYMOUS").
-		strncpy(highscoreTable.highscore[i].nameArray, "ANONYMOUS", MAX_SCORE_NAME_LENGTH);
+		strncpy(highscoreTable.highscore[i].nameArray, "EMPTY", MAX_SCORE_NAME_LENGTH);
 		highscoreTable.highscore[i].nameArray[MAX_SCORE_NAME_LENGTH - 1] = '\0';
 	}
 
 	// Initialize new highscore pointer and cursor blink timer.
 	newHighscorePtr = NULL;
 	cursorBlinkTimer = 0;
+}
+
+/**
+ * @brief Try to load previous highscore data.
+ * @param currLineIdx An integer indicates the index of current line.
+ * @return An integer indicates the index of next line.
+*/
+static int tryToLoadHighscoreFile(int currLineIdx)
+{
+	// Try to open the previous highscore file in read mode.
+	FILE* highscoreFilePtr = fopen("Resources/data/highscores.txt", "r");
+
+	// If this file exist.
+	if (highscoreFilePtr != NULL)
+	{
+		// Declare a char array for each line and a char pointer for each word.
+		char eachLine[MAX_LINE_LENGTH];
+		char* eachWordPtr;
+		// Loop on each line.
+		while (fgets(eachLine, MAX_LINE_LENGTH, highscoreFilePtr))
+		{
+			// Split by "," delimiter.
+			eachWordPtr = strtok(eachLine, ",");
+			// If first word exists, copy it as player's name of current highscore.
+			if (eachWordPtr != NULL)
+			{
+				strncpy(highscoreTable.highscore[currLineIdx].nameArray, eachWordPtr, MAX_SCORE_NAME_LENGTH);
+				highscoreTable.highscore[currLineIdx].nameArray[MAX_SCORE_NAME_LENGTH - 1] = '\0';
+			}
+			// Find the second word.
+			eachWordPtr = strtok(NULL, ",");
+			// If second word exists, copy it as current player's highscore.
+			if (eachWordPtr != NULL)
+			{
+				highscoreTable.highscore[currLineIdx].score = atoi(eachWordPtr);
+			}
+			// Proceed to next line.
+			++currLineIdx;
+		}
+		// Close the file.
+		fclose(highscoreFilePtr);
+	}
+	// Handle file does not exist case.
+	else 
+	{
+		perror("The file specified does not exist!");
+		return 0;
+	}
+	return currLineIdx;
 }
 
 /**
@@ -106,7 +159,7 @@ static void highscoreSceneDraw()
 
 		if (timeInterval % 20 < 10)
 		{
-			drawText(SCREEN_WIDTH / 2, 600, 255, 255, 255, TEXT_CENTER, "PRESS FIRE(X) TO PLAY!");
+			drawText(SCREEN_WIDTH / 2, 650, 255, 255, 255, TEXT_CENTER, "PRESS X KEY TO PLAY!");
 		}
 	}
 }
@@ -167,13 +220,17 @@ static void drawHighscoreTable()
 			b = 0;
 		}
 		// Draw each row, align player name to the left.
-		drawText(SCREEN_WIDTH / 2, currHeight, r, g, b, TEXT_CENTER, "#%d. %-31s ............. %03d",
+		drawText(SCREEN_WIDTH / 2, currHeight, r, g, b, TEXT_CENTER, "#%-2d. %-31s ............. %03d",
 			(i + 1), highscoreTable.highscore[i].nameArray, highscoreTable.highscore[i].score);
 		// Update to next row's height.
 		currHeight += 50;
 	}
 	// Draw text to tell the player what they need to do to start the game.
-	drawText(SCREEN_WIDTH/2, 600, 255, 255, 255, TEXT_CENTER, "PRESS FIRE(X) TO PLAY!");
+	if (timeInterval % 20 < 10)
+	{
+		drawText(SCREEN_WIDTH / 2, 650, 255, 255, 255, TEXT_CENTER, "PRESS X KEY TO PLAY!");
+	}
+	
 }
 
 /**
@@ -271,4 +328,30 @@ static void updateInputName()
 		}
 		newHighscorePtr = NULL;
 	}
+}
+
+/**
+ * @brief Save current highscore data into a txt file.
+*/
+int saveHighscoreData()
+{
+	char* highscoreFileNamePtr = "Resources/data/highscores.txt";
+	// Create the file for writing.
+	FILE* highscoreFilePtr = fopen(highscoreFileNamePtr, "w");
+	// Check if file exists.
+	if (highscoreFilePtr == NULL)
+	{
+		printf("Error opening the file %s", highscoreFileNamePtr);
+		return -1;
+	}
+	// write each line(contains player name and related highscore).
+	for (int i = 0; i < HIGHSCORE_TABLE_ROW_NUM; ++i)
+	{
+		fprintf(highscoreFilePtr, "%s,%d,\n", highscoreTable.highscore[i].nameArray, highscoreTable.highscore[i].score);
+	}
+
+	// close the file
+	fclose(highscoreFilePtr);
+
+	return 0;
 }

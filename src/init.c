@@ -66,11 +66,13 @@ void initSDL()
 }
 
 /**
- * @brief Clean up the game and quit.
+ * @brief Clean up the game, save the current highscore data and quit.
  *
  */
 void cleanup()
 {
+	saveHighscoreData();
+
 	SDL_DestroyRenderer(app.renderer);
 
 	SDL_DestroyWindow(app.window);

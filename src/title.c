@@ -74,7 +74,7 @@ static void titleScreenDraw()
 	if (timeout % 20 < 10)
 	{
 		// Draw the helper message
-		drawText(SCREEN_WIDTH / 2, 600, 255, 255, 255, TEXT_CENTER, "PRESS FIRE(X key) TO PLAY!");
+		drawText(SCREEN_WIDTH / 2, 600, 255, 255, 255, TEXT_CENTER, "PRESS X KEY TO PLAY!");
 	}
 }
 

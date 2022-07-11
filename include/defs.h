@@ -51,7 +51,7 @@
 #define MAX_TEXTURE_NAME_LEN 100
 
 // Define the maximum rows' number of the highscore table.
-#define HIGHSCORE_TABLE_ROW_NUM 8
+#define HIGHSCORE_TABLE_ROW_NUM 10
 
 // Define the maximum length of player name.
 #define MAX_SCORE_NAME_LENGTH 32

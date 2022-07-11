@@ -22,6 +22,7 @@ extern void initSounds(void);
 extern void initStarfield(void);
 extern void loadMusic(char*);
 extern void playMusic(int);
+extern void saveHighscoreData(void);
 
 // Declare an app here to help initialize the game.
 extern AppStruct app;

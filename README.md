@@ -1,6 +1,6 @@
 # SDL2_simple_2D_shooter
 
-A simple 2D space shooter game demo created by C++ and SDL(Simple DirectMedia Layer) with Visual Studio Code.
+A simple 2D space shooter game demo created by pure C and SDL(Simple DirectMedia Layer) with Visual Studio.
 
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
@@ -16,13 +16,13 @@ A simple 2D space shooter game demo created by C++ and SDL(Simple DirectMedia La
 
 ## Background
 
-No special reasons :D, I just want to build some simple games without commercial game engines.
+A 1280 x 720 window will open, with a colorful background. The title screen will be displayed, as in the screenshot above. Press the left control key to start. A spaceship sprite will also be shown. The ship can now be moved using the arrow keys. Up, down, left, and right will move the ship in the respective directions. You can also fire by holding down the left control key. Enemies (basically red versions of the player's ship) will spawn from the right and move to the left. Shoot enemies to destroy them. Enemies can fire back, so you should avoid their shots. Score points by collect points pods released from destroyed enemy ships. The highscore table is shown upon the player's death. If the player has earned a highscore, they will be prompted to enter their name. The highscore table is then shown and the game can be played again. Close the window by clicking on the window's close button.
 
 ## Exhibition(Needs to be updated)
 
 ## Install
 
-I Use C++ language, [SDL(Simple DirectMedia Layer)](https://www.libsdl.org/) and Visual Studio Code under Windows 10 environment for this project.
+I Use C language, [SDL(Simple DirectMedia Layer)](https://www.libsdl.org/) and Visual Studio Code under Windows 10 environment for this project.
 
 [Visual Studio Code Download](https://code.visualstudio.com/download)<br>
 

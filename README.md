@@ -53,7 +53,7 @@ I Use C language, [SDL(Simple DirectMedia Layer)](https://www.libsdl.org/) , SDL
 
 There are altogether **13** headers and **11** source files.
 
-Detailed documentation can be seen via this [link](https://yunxiang-li.github.io/SDL2_shooter_document/html/)
+Detailed documentation can be viewed via this [link](https://yunxiang-li.github.io/SDL2_shooter_document/html/)
 
 ## Maintainers
 

@@ -1,19 +1,20 @@
 # SDL2_simple_2D_shooter
 
-A simple 2D space shooter game demo created by pure C and SDL(Simple DirectMedia Layer) with Visual Studio.
+This is a simple 2D space shooter game demo created by pure C and SDL(Simple DirectMedia Layer) with Visual Studio.
+You can check the video and screenshots/GIFs about this demo from my [personal portfolio website]().
 
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
 ## Table of Contents
 
-- [Background](#Background)
+- [Overview](#Overview)
 - [Install](#install)
 - [Usage](#Usage)
 - [Structure](#Structure)
 - [Maintainers](#Maintainers)
 - [License](#license)
 
-## Background
+## Overview
 
 The game will be launched with a 1280 x 720 window and a starfield background. Then the **titlescreen scene** will be displayed. Additionally, current displayed scene will be switched between **titlescreen scene** and **highscore scene**. Player can press the **fire(X) key** to enter the **main game scene**.
 

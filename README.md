@@ -7,10 +7,8 @@ A simple 2D space shooter game demo created by pure C and SDL(Simple DirectMedia
 ## Table of Contents
 
 - [Background](#Background)
-- [Exhibition](#Exhibition)
 - [Install](#install)
 - [Usage](#Usage)
-- [Features](#Features)
 - [Structure](#Structure)
 - [Maintainers](#Maintainers)
 - [License](#license)
@@ -22,17 +20,17 @@ Inside the **main game scene**, a spaceship sprite which indicates the player wi
 Enemy red spaceships will spawn from the right and then move to the left. Enemies can be destroyed by player's bullets. Besides, enemies can also fire back thus player should try to avoid their bullets. When enemies are destroyed, they will release point pods and player can collect them to gain score points.
 Furthermore, the **highscore table scene** is shown after player's death. If the player has earned a new highscore, he/she will be prompted to enter his/her name. Then the **highscore table scene** is displayed and the game can be played again. Game window can be closed by clicking on the window's close button.
 
-## Exhibition(Needs to be updated)
-
 ## Install
 
-I Use C language, [SDL(Simple DirectMedia Layer)](https://www.libsdl.org/) , SDL_mixer and Visual Studio under Windows 10 environment for this project.
+I Use C language, [SDL(Simple DirectMedia Layer)](https://www.libsdl.org/) , SDL_mixer, SDL_image and Visual Studio under Windows 10 environment for this project.
 
 [Visual Studio Download](https://visualstudio.microsoft.com/vs/)<br>
 
 [SDL Wiki](http://wiki.libsdl.org/FrontPage)
 
 [SDL_mixer Download](https://github.com/libsdl-org/SDL_mixer)
+
+[SDL_image Download](https://github.com/libsdl-org/SDL_image)
 
 ## Usage
 
@@ -42,11 +40,14 @@ I Use C language, [SDL(Simple DirectMedia Layer)](https://www.libsdl.org/) , SDL
 
 3. Set up **SDL_mixer** according to [lazyfoo's guide](https://lazyfoo.net/SDL_tutorials/lesson11/index.php)
 
-4. Build and run the project to play the game.
+4. Set up **SDL_image** according to [lazyfoo's guide](https://lazyfoo.net/tutorials/SDL/06_extension_libraries_and_loading_other_image_formats/index.php)
 
-## Features
+5. Build and run the project to play the game.
 
 ## Structure
+
+There are altogether **13** headers and **11** source files.
+Detailed documentation can se seen via this [link](https://yunxiang-li.github.io/SDL2_shooter_document/html/)
 
 ## Maintainers
 

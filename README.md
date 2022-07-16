@@ -1,38 +1,41 @@
 # SDL2_simple_2D_shooter
 
-A simple 2D space shooter game demo created by pure C and SDL(Simple DirectMedia Layer) with Visual Studio.
+This is a simple 2D space shooter game demo created by pure C and SDL(Simple DirectMedia Layer) with Visual Studio.
+
+You can check the video and screenshots/GIFs about this demo from my [personal portfolio website]().
 
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
 ## Table of Contents
 
-- [Background](#Background)
-- [Exhibition](#Exhibition)
+- [Overview](#Overview)
 - [Install](#install)
 - [Usage](#Usage)
-- [Features](#Features)
 - [Structure](#Structure)
 - [Maintainers](#Maintainers)
 - [License](#license)
 
-## Background
+## Overview
 
 The game will be launched with a 1280 x 720 window and a starfield background. Then the **titlescreen scene** will be displayed. Additionally, current displayed scene will be switched between **titlescreen scene** and **highscore scene**. Player can press the **fire(X) key** to enter the **main game scene**.
-Inside the **main game scene**, a spaceship sprite which indicates the player will also be shown. The spaceship can moved by using 4 arrow keys: Up, down, left, and right. The spaceship can also fire bullets by holding down the **fire(X)** key.
-Enemy red spaceships will spawn from the right and then move to the left. Enemies can be destroyed by player's bullets. Besides, enemies can also fire back thus player should try to avoid their bullets. When enemies are destroyed, they will release point pods and player can collect them to gain score points.
-Furthermore, the **highscore table scene** is shown after player's death. If the player has earned a new highscore, he/she will be prompted to enter his/her name. Then the **highscore table scene** is displayed and the game can be played again. Game window can be closed by clicking on the window's close button.
 
-## Exhibition(Needs to be updated)
+Inside the **main game scene**, a spaceship sprite which indicates the player will also be shown. The spaceship can moved by using 4 arrow keys: Up, down, left, and right. The spaceship can also fire bullets by holding down the **fire(X)** key.
+
+Enemy red spaceships will spawn from the right and then move to the left. Enemies can be destroyed by player's bullets. Besides, enemies can also fire back thus player should try to avoid their bullets. When enemies are destroyed, they will release point pods and player can collect them to gain score points.
+
+Furthermore, the **highscore table scene** is shown after player's death. If the player has earned a new highscore, he/she will be prompted to enter his/her name. Then the **highscore table scene** is displayed and the game can be played again. Game window can be closed by clicking on the window's close button.
 
 ## Install
 
-I Use C language, [SDL(Simple DirectMedia Layer)](https://www.libsdl.org/) , SDL_mixer and Visual Studio under Windows 10 environment for this project.
+I Use C language, [SDL(Simple DirectMedia Layer)](https://www.libsdl.org/) , SDL_mixer, SDL_image and Visual Studio under Windows 10 environment for this project.
 
 [Visual Studio Download](https://visualstudio.microsoft.com/vs/)<br>
 
 [SDL Wiki](http://wiki.libsdl.org/FrontPage)
 
 [SDL_mixer Download](https://github.com/libsdl-org/SDL_mixer)
+
+[SDL_image Download](https://github.com/libsdl-org/SDL_image)
 
 ## Usage
 
@@ -42,11 +45,15 @@ I Use C language, [SDL(Simple DirectMedia Layer)](https://www.libsdl.org/) , SDL
 
 3. Set up **SDL_mixer** according to [lazyfoo's guide](https://lazyfoo.net/SDL_tutorials/lesson11/index.php)
 
-4. Build and run the project to play the game.
+4. Set up **SDL_image** according to [lazyfoo's guide](https://lazyfoo.net/tutorials/SDL/06_extension_libraries_and_loading_other_image_formats/index.php)
 
-## Features
+5. Build and run the project to play the game.
 
 ## Structure
+
+There are altogether **13** headers and **11** source files.
+
+Detailed documentation can be viewed via this [link](https://yunxiang-li.github.io/SDL2_shooter_document/html/)
 
 ## Maintainers
 

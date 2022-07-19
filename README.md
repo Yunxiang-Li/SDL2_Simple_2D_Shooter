@@ -55,6 +55,32 @@ There are altogether **13** headers and **11** source files.
 
 Detailed documentation can be viewed via this [link](https://yunxiang-li.github.io/SDL2_shooter_document/html/)
 
+**1.** `background` : handle all background related behaviors.
+
+**2.** `defs` : include all defined variables here.
+
+**3.** `draw` : contain all draw(render) related features.
+
+**4.** `highscores` : process all features related to highscores.
+
+**5.** `init.h` : handle the initialization and cleanup of the game.
+
+**6.** `input.h` : process all user's input.
+
+**7.** `main.h` : be responsible for the entrance and the main game loop.
+
+**8.** `sound.h` : handle all sound behaviors inside the game.
+
+**9.** `stage.h` : run the actual game logic.
+
+**10.** `structs.h` : contain all custom structs used for the game.
+
+**11.** `text.h` : hold all features about in-game text.
+
+**12.** `title.h` : responsible for all behaviours of titlescreen scene.
+
+**13.** `util.h` : store several utility functions to help create the game (such as math calculation and collision detection).
+
 ## Maintainers
 
 [@Yunxiang-Li](https://github.com/Yunxiang-Li).

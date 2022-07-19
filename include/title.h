@@ -1,3 +1,4 @@
+// Responsible for all behaviours of titlescreen scene.
 #pragma once
 #ifndef TITLE_H
 #define TITLE_H

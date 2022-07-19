@@ -1,3 +1,4 @@
+// Handle all background related behaviors.
 #pragma once
 #ifndef BACKGROUND_H
 #define BACKGROUND_H

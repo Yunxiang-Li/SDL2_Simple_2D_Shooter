@@ -2,7 +2,7 @@
 
 This is a simple 2D space shooter game demo created by pure C and SDL(Simple DirectMedia Layer) with Visual Studio.
 
-You can check the video and screenshots/GIFs about this demo from my [personal portfolio website]().
+You can check the video and screenshots/GIFs about this demo from my [personal portfolio website](https://yunxiang-li.github.io./#/game-projects).
 
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 

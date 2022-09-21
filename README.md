@@ -51,9 +51,17 @@ I Use C language, [SDL(Simple DirectMedia Layer)](https://www.libsdl.org/) , SDL
 
 ## Structure
 
-There are altogether **13** headers and **11** source files.
+The whole project contains four main folders, **Exhibitions** folder, **Resources** folder, **include** folder and **src** folder.
 
-Detailed documentation can be viewed via this [link](https://yunxiang-li.github.io/SDL2_shooter_document/html/)
+1. **Exhibitions** folder contains all screenshots and GIFs needed for exhibition.
+
+2. **src** folder contains altogether **11** source files:
+
+3. **include** folder contains altogether **13** header files:
+
+4. **Resources** folder contains **1** font(.ttf) file, **1** highscore data file(.txt), **9** game objects' image files(.png), **1** music file(.ogg) and **5** sound files(.ogg).
+
+Detailed documentation can be viewed via this [link](https://yunxiang-li.github.io/SDL2_shooter_document/html/).
 
 **1.** `background` : handle all background related behaviors.
 

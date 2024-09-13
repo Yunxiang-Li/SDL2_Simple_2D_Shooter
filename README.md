@@ -9,6 +9,7 @@ You can check the video, screenshots/GIFs and more information about this demo f
 ## Table of Contents
 
 - [Overview](#Overview)
+- [Features](#Features)
 - [Install](#install)
 - [Usage](#Usage)
 - [Structure](#Structure)
@@ -24,6 +25,16 @@ Inside the **main game scene**, a spaceship sprite which indicates the player wi
 Enemy red spaceships will spawn from the right and then move to the left. Enemies can be destroyed by player's bullets. Besides, enemies can also fire back thus player should try to avoid their bullets. When enemies are destroyed, they will release point pods and player can collect them to gain score points.
 
 Furthermore, the **highscore table scene** is shown after player's death. If the player has earned a new highscore, he/she will be prompted to enter his/her name. Then the **highscore table scene** is displayed and the game can be played again. Game window can be closed by clicking on the window's close button.
+
+## Features
+
+1. Create multiple custom linked lists to update each spaceship, bullet, explosion, debris and point pod
+2. Customize explosion effect made by ship debris
+3. Apply basic AI on enemies to always aim at the player when firing bullets
+4. Enable players to fire bullets to destroy enemies and collide with released point pods to gain scores
+5. Implement highscore table which can be saved and loaded as a txt file
+6. Add switch scene feature between titlescreen and highscore table
+7. Use SDL_image to render sprites, utilize SDL_mixer to play sound effects and music
 
 ## Install
 
